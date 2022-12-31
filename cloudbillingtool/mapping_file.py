@@ -6,12 +6,13 @@ from pyspark import rdd
 from pyspark.sql.types import StructType, StringType
 
 type_schema = StructType() \
-  .add("Type",StringType(),True) \
-  .add("CostResourceTag",StringType(),True)
+  .add("Type", StringType(), True) \
+  .add("CostResourceTag", StringType(), True)
 
 resource_schema = StructType() \
-  .add("CostResourceID",StringType(),True) \
-  .add("CostResourceTag",StringType(),True)
+  .add("CostResourceID", StringType(), True) \
+  .add("CostResourceTag", StringType(), True)
+
 
 def load_mapping_file(spark, file_location, schema) -> rdd :
     return \
