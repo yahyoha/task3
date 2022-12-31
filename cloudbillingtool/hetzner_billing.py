@@ -6,7 +6,7 @@ from pyspark import rdd
 from pyspark.pandas import DataFrame
 from pyspark.sql.types import StructType, StringType
 import cloudbillingtool.mapping_file as mapping_file
-from uniform_billing import uniform_schema
+from cloudbillingtool.uniform_billing import uniform_schema
 
 hetzner_schema = StructType() \
   .add("Type",StringType(),True) \
@@ -20,7 +20,7 @@ hetzner_schema = StructType() \
   .add("HetznerCostResourceID", StringType(), True)
 
 
-def extract_tag(desc):
+def extract_costresourceid(desc):
     return re.search(r'#[0-9]+', desc).group() if re.search(r'#[0-9]+', desc) else None
 
 
@@ -46,7 +46,7 @@ def load_files(spark, files_location) -> rdd :
             "EndDate": fix_date_format_for_hetzner(row.EndDate),
             "Quantity": row.Quantity,
             "UnitPrice": row.UnitPrice,
-            "CostResourceID":  extract_tag(row.Description),
+            "CostResourceID":  extract_costresourceid(row.Description),
             "CostResourceTag": ""
         })
 
@@ -66,9 +66,9 @@ def load_with_mapping(spark, hetzner_data, mapping_files_path):
 
     joined = hetzner_df\
         .join(type_mapping_df, hetzner_df.Type == type_mapping_df.Type, "left") \
-        .join(resource_mapping_df, hetzner_df["CostResourceID"] == resource_mapping_df["CostResourceID"], "left")
-
-    # Todo: Map to uniform structure
+        .join(resource_mapping_df, hetzner_df["CostResourceID"] == resource_mapping_df["CostResourceID"], "left") \
+        .map()
+        # Todo: Map to uniform structure
 
     return joined
 

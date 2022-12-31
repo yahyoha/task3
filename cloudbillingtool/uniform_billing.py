@@ -9,4 +9,4 @@ uniform_schema = StructType() \
   .add("Price",StringType(), True) \
   .add("CostResourceTage",StringType(), True) \
   .add("CostResourceId",StringType(), True) \
-  .add("Tags",ArrayType(StringType)(), True)
+  .add("Tags",ArrayType(StringType()), True )
