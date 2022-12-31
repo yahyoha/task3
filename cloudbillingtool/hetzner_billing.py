@@ -9,12 +9,12 @@ import cloudbillingtool.mapping_file as mapping_file
 from cloudbillingtool.uniform_billing import uniform_schema
 
 hetzner_schema = StructType() \
-  .add("Type",StringType(),True) \
-  .add("Product",StringType(),True) \
-  .add("Description",StringType(),True) \
-  .add("StartDate",StringType(),True) \
-  .add("EndDate",StringType(),True) \
-  .add("Quantity",StringType(),True) \
+  .add("Type",StringType(), True) \
+  .add("Product",StringType(), True) \
+  .add("Description",StringType(), True) \
+  .add("StartDate",StringType(), True) \
+  .add("EndDate",StringType(), True) \
+  .add("Quantity",StringType(), True) \
   .add("UnitPrice", StringType(), True) \
   .add("Price", StringType(), True) \
   .add("HetznerCostResourceID", StringType(), True)
@@ -38,7 +38,7 @@ def load_files(spark, files_location) -> rdd :
         .schema(hetzner_schema)\
         .csv(files_location)\
         .rdd\
-        .map(lambda row : {
+        .map(lambda row: {
             "Type": row.Type,
             "Product": row.Product,
             "Description": row.Description,
@@ -53,26 +53,35 @@ def load_files(spark, files_location) -> rdd :
 
 def load_with_mapping(spark, hetzner_data, mapping_files_path):
 
-    hetzner_df: DataFrame = load_files(spark, hetzner_data).toDF();
+    hetzner_df: DataFrame = \
+        load_files(spark, hetzner_data)\
+        .toDF()\
+        .alias("hetzner_df");
 
-    type_mapping_df :DataFrame = mapping_file\
-        .load_mapping_file(spark, mapping_files_path+"/type_mapping.csv", mapping_file.type_schema).toDF();
+    type_mapping_df :DataFrame = \
+        mapping_file.load_mapping_file(spark, mapping_files_path+"/type_mapping.csv", mapping_file.type_schema)\
+        .toDF() \
+        .alias("type_mapping_df");
 
-    resource_mapping_df :DataFrame = mapping_file\
-        .load_mapping_file(spark, mapping_files_path+"/resource_mapping.csv", mapping_file.resource_schema).toDF();
+    resource_mapping_df :DataFrame = \
+        mapping_file.load_mapping_file(spark, mapping_files_path+"/resource_mapping.csv", mapping_file.resource_schema)\
+        .toDF()\
+        .alias("resource_mapping_df");
 
+    # for debugging
     type_mapping_df.show()
     resource_mapping_df.show()
 
-    joined = hetzner_df\
+    joined = hetzner_df \
         .join(type_mapping_df, hetzner_df.Type == type_mapping_df.Type, "left") \
-        .join(resource_mapping_df, hetzner_df["CostResourceID"] == resource_mapping_df["CostResourceID"], "left") \
-        .map()
-        # Todo: Map to uniform structure
+        .join(resource_mapping_df, hetzner_df["CostResourceID"] == resource_mapping_df["CostResourceID"], "left")
+        #.select( lambda x: x )
+
+        # Todo: merging the tags from mapping files into a single field
 
     return joined
 
 
-def load_uniform_schema(spark, hetzner_data, mapping_files_path) -> uniform_schema :
+def load_uniform_schema(spark, hetzner_data, mapping_files_path) -> uniform_schema:
     # Todo: implement this
     pass
