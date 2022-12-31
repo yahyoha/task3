@@ -74,8 +74,8 @@ def load_with_mapping(spark, hetzner_data, mapping_files_path):
 
     joined = hetzner_df \
         .join(type_mapping_df, hetzner_df.Type == type_mapping_df.Type, "left") \
-        .join(resource_mapping_df, hetzner_df["CostResourceID"] == resource_mapping_df["CostResourceID"], "left")
-        #.select( lambda x: x )
+        .join(resource_mapping_df, hetzner_df["CostResourceID"] == resource_mapping_df["CostResourceID"], "left") \
+        .select( hetzner_df["*"], resource_mapping_df["CostResourceTag"], type_mapping_df["CostResourceTag"] )
 
         # Todo: merging the tags from mapping files into a single field
 
