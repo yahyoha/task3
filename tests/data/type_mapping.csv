@@ -8,4 +8,5 @@ Cloud-Projekt "Recruiting"	IT-OPS
 Cloud-Projekt "Senec"	EDS
 Cloud-Projekt "playground"	EDS
 Cloud-Projekt "Quality Assurance"	EDS
-Servers	DEV
+Servers	DEV,IT-OPS
+Storage Boxes	IT-OPS
