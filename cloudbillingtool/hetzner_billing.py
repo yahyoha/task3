@@ -37,7 +37,14 @@ def flatten(l):
 
 def find_tags_in_df(df, field, pattern):
     matching_rows = df.loc[df[field].str.contains(pattern, case=False)]['CostResourceTag']
-    return flatten(list( map( lambda x: x.split(","), matching_rows.tolist() ) ))
+    return flatten(list( map( lambda x: x.split(","), matching_rows.tolist())))
+
+
+def merge_tags_from_dt(resource_mapping_df, type_mapping_df, rowDescription, rowType):
+    return  (list(set(find_tags_in_df(resource_mapping_df, "CostResourceID",
+                              extract_costresourceid(rowDescription)) +
+              find_tags_in_df(type_mapping_df, "Type", rowType)))) + ['']
+
 
 
 def load_files(spark, files_location, mapping_files_path ) -> rdd :
@@ -60,9 +67,8 @@ def load_files(spark, files_location, mapping_files_path ) -> rdd :
             "Quantity": row.Quantity,
             "UnitPrice": row.UnitPrice,
             "CostResourceID":  extract_costresourceid(row.Description),
-            "CostResourceTag": list(set( find_tags_in_df(resource_mapping_df, "CostResourceID",
-                                               extract_costresourceid(row.Description)) +
-                            find_tags_in_df(type_mapping_df, "Type", row.Type)))
+            "CostResourceTag": merge_tags_from_dt( resource_mapping_df,type_mapping_df,row.Description, row.Type )
+
         })
 
 
