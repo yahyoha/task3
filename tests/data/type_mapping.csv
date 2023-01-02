@@ -3,8 +3,8 @@ Cloud-Projekt "ci"	IT-OPS
 Cloud-Projekt "NBA"	IT-OPS
 Cloud-Projekt "BHA"	IT-OPS
 Cloud-Projekt "Recruiting"	IT-OPS
-"Server Backups"	Backup,IT-OPS
-"Snapshots"	Backup,IT-OPS
+Server Backups	Backup,IT-OPS
+Snapshots	Backup,IT-OPS
 Cloud-Projekt "Senec"	EDS
 Cloud-Projekt "playground"	EDS
 Cloud-Projekt "Quality Assurance"	EDS
