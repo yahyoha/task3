@@ -72,18 +72,17 @@ def load_with_mapping(spark, hetzner_data, mapping_files_path):
     resource_mapping_df.show()
 
     joined_with_tags = hetzner_df \
-        .join(type_mapping_df, hetzner_df.Type == type_mapping_df.Type, "left") \
+        .join(type_mapping_df,hetzner_df.Type == type_mapping_df.Type, "left") \
         .join(resource_mapping_df, hetzner_df["CostResourceID"] == resource_mapping_df["CostResourceID"], "left") \
         .select(lit("hetzner").alias("provider"),
+                col("hetzner_df.Type"),
                 col("hetzner_df.Product").alias("ProductName"),
-                col("hetzner_df.Price").cast(DecimalType(12,2)).alias("Price"),
+                col("hetzner_df.Price").cast(DecimalType(12, 2)).alias("Price"),
                 to_date(col("hetzner_df.StartDate"), "MM-dd-yyyy").alias("Date"),
                 col("hetzner_df.CostResourceID").alias("CostResourceID"),
                 col("resource_mapping_df.CostResourceTag").alias("resourceTag"),
                 col("type_mapping_df.CostResourceTag").alias("typeTag")) \
         .na.fill("", ["resourceTag", "typeTag"]) \
         .withColumn("CostResourceTag", array_union( split("typeTag", ","), split("typeTag", ","))) \
-        .drop("resourceTag") \
-        .drop("typeTag")
 
     return joined_with_tags

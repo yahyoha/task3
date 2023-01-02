@@ -17,6 +17,8 @@ class TestHetznerBilling(unittest.TestCase):
     def testHetznerBillingLoad(self):
         hetzner_billing_with_tags = hetzner_billing.load_with_mapping(spark, "tests/data/hetzner/*.csv", "tests/data")
 
-        rows = hetzner_billing_with_tags.rdd.map( lambda x: x).collect()
+        rows = hetzner_billing_with_tags.rdd.map( lambda x: x).take(100)
         for row in rows:
             print(row)
+
+        #hetzner_billing_with_tags.write.csv("/tmp/cloudbillingtool/hetzner_data")
