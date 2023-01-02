@@ -1,13 +1,9 @@
 import re
-import csv
-from datetime import datetime
-
 from pyspark import rdd
 from pyspark.pandas import DataFrame
 from pyspark.sql.functions import col, lit, array, split, array_join, array_union, concat, to_date
 from pyspark.sql.types import StructType, StringType, ArrayType, DecimalType
 import cloudbillingtool.mapping_file as mapping_file
-from cloudbillingtool.uniform_billing import uniform_schema
 
 hetzner_schema = StructType() \
   .add("Type",StringType(), True) \
