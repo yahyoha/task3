@@ -29,4 +29,12 @@ if __name__ == "__main__":
 
     bills = cloudbillingtool.all_billing.load_all_with_tags(spark, hetzner_data, azure_data, work_dir )
 
-    bills.write.mode('overwrite').options(delimiter='\t').csv(output_path+"/all_bills")
+    azure_billing_with_tags = cloudbillingtool.azure_billing.load_files_with_mapping(spark, azure_data, work_dir)
+    hetzner_billing_with_tags = cloudbillingtool.hetzner_billing.load_files_with_mapping(spark, hetzner_data,work_dir)
+
+    all_billing = azure_billing_with_tags.rdd.union(hetzner_billing_with_tags.rdd)
+
+    for row in all_billing.collect():
+        print(row)
+
+    all_billing.write.mode('overwrite').options(delimiter='\t').csv(output_path+"/all_bills")

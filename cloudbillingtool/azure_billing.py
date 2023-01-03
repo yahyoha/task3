@@ -28,11 +28,11 @@ def load_files(spark, azure_data, work_folder ) -> rdd :
         .rdd \
         .map(lambda row: {
             "Provider": "azure",
-            "Type": row.ProductName,
+            "Type":  "",    # Missing in Azure
             "Costs": row.costInBillingCurrency,
             "UnitPrice": row.unitPrice,
             "Quantity": row.quantity,
-            "ProductName": "",
+            "Product": row.ProductName,
             "Date": row.date,
             "CostResourceID": row.ResourceId,
             "CostResourceTag": helper.tags_from_json_string(row.tags) +
@@ -45,7 +45,7 @@ def load_files(spark, azure_data, work_folder ) -> rdd :
       })
 
 
-def load_with_mapping(spark, azure_data, work_folder):
+def load_files_with_mapping(spark, azure_data, work_folder):
     hetzner_df: DataFrame = \
         load_files(spark, azure_data, work_folder)\
         .toDF()\
@@ -53,13 +53,13 @@ def load_with_mapping(spark, azure_data, work_folder):
 
     joined_with_tags = hetzner_df \
         .select(lit("azure").alias("provider"),
-                col("azure_df.Type"),
-                col("azure_df.Product").alias("ProductName"),
-                col("azure_df.Price").cast(DecimalType(12, 8)).alias("Costs"),
-                col("azure_df.UnitPrice").cast(DecimalType(12, 8)).alias("UnitPrice"),
-                col("azure_df.Quantity").cast(DecimalType(12, 8)).alias("Quantity"),
-                to_date(col("azure_df.Date"), "MM-dd-yyyy").alias("Date"),
-                col("hetzner_df.CostResourceID").alias("CostResourceID"),
-                explode("hetzner_df.CostResourceTag").alias("CostResourceTag"))
+            col("azure_df.Type"),
+            col("azure_df.Product").alias("ProductName"),
+            col("azure_df.Costs").cast("float").alias("Costs"),
+            col("azure_df.UnitPrice").cast("float").alias("UnitPrice"),
+            col("azure_df.Quantity").cast("float").alias("Quantity"),
+            to_date(col("azure_df.Date"), "MM/dd/yyyy").alias("Date"),
+            col("azure_df.CostResourceID").alias("CostResourceID"),
+            explode("azure_df.CostResourceTag").alias("CostResourceTag"))
 
     return joined_with_tags

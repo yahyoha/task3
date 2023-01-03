@@ -33,8 +33,8 @@ def load_files(spark, hetzner_data, work_folder ) -> rdd :
             "Price": row.Price,
             "Product": row.Product,
             "Description": row.Description,
-            "StartDate": helper.fix_date_format_for_hetzner(row.StartDate),
-            "EndDate": helper.fix_date_format_for_hetzner(row.EndDate),
+            "StartDate": row.StartDate,
+            "EndDate": row.EndDate,
             "Quantity": row.Quantity,
             "UnitPrice": row.UnitPrice,
             "CostResourceID":  helper.extract_costresourceid(row.Description),
@@ -47,7 +47,7 @@ def load_files(spark, hetzner_data, work_folder ) -> rdd :
         })
 
 
-def load_with_mapping(spark, hetzner_data, mapping_files_path):
+def load_files_with_mapping(spark, hetzner_data, mapping_files_path):
     hetzner_df: DataFrame = \
         load_files(spark, hetzner_data, mapping_files_path)\
         .toDF()\
@@ -60,7 +60,7 @@ def load_with_mapping(spark, hetzner_data, mapping_files_path):
                 col("hetzner_df.Price").cast("float").alias("Costs"),
                 col("hetzner_df.UnitPrice").cast("float").alias("UnitPrice"),
                 col("hetzner_df.Quantity").cast("float").alias("Quantity"),
-                to_date(col("hetzner_df.StartDate"), "MM-dd-yyyy").alias("Date"),
+                to_date(col("hetzner_df.StartDate"), "yyyy-MM-dd").alias("Date"),
                 col("hetzner_df.CostResourceID").alias("CostResourceID"),
                 explode("hetzner_df.CostResourceTag").alias("CostResourceTag"))
 
