@@ -46,16 +46,15 @@ def merge_tags_from_dt(resource_mapping_df, type_mapping_df, rowDescription, row
               find_tags_in_df(type_mapping_df, "Type", rowType)))) + ['']
 
 
-
-def load_files(spark, files_location, mapping_files_path ) -> rdd :
-    resource_mapping_df = pd.read_csv(mapping_files_path+"/resource_mapping.csv", sep='\t')
-    type_mapping_df = pd.read_csv(mapping_files_path+"/type_mapping.csv", sep='\t')
+def load_files(spark, hetzner_data, work_folder ) -> rdd :
+    resource_mapping_df = pd.read_csv(work_folder+"/resource_mapping.csv", sep='\t')
+    type_mapping_df = pd.read_csv(work_folder+"/type_mapping.csv", sep='\t')
 
     return\
         spark.read\
         .options(format='csv', escape="\"", header=False)\
         .schema(hetzner_schema)\
-        .csv(files_location)\
+        .csv(hetzner_data)\
         .rdd\
         .map(lambda row: {
             "Type": row.Type,
