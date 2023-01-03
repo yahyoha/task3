@@ -67,7 +67,6 @@ def load_files(spark, hetzner_data, work_folder ) -> rdd :
             "UnitPrice": row.UnitPrice,
             "CostResourceID":  extract_costresourceid(row.Description),
             "CostResourceTag": merge_tags_from_dt( resource_mapping_df,type_mapping_df,row.Description, row.Type )
-
         })
 
 
@@ -84,6 +83,6 @@ def load_with_mapping(spark, hetzner_data, mapping_files_path):
                 col("hetzner_df.Price").cast(DecimalType(12, 2)).alias("Price"),
                 to_date(col("hetzner_df.StartDate"), "MM-dd-yyyy").alias("Date"),
                 col("hetzner_df.CostResourceID").alias("CostResourceID"),
-                explode("hetzner_df.CostResourceTag"))
+                explode("hetzner_df.CostResourceTag").alias("CostResourceTag"))
 
     return joined_with_tags
