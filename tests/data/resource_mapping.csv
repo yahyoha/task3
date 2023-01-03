@@ -3,3 +3,4 @@ CostResourceID	CostResourceTag
 #929826	PROD
 #52087522	TEST
 #16425090	TEST
+/subscriptions/baa0f8da-8f65-4791-83df-8b035d51a3b4/resourceGroups/CloudBillingTool/providers/Microsoft.Storage/storageAccounts/cloudbillingtoolstorage	AZURE_TAG1
