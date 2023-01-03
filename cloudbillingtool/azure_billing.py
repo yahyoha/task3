@@ -50,3 +50,4 @@ def load_files(spark, azure_data, work_folder ) -> rdd :
       })
 
     # Todo: key=value
+    # Solution: for integrating hetzner tags with azure
