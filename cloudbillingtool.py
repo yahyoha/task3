@@ -1,4 +1,4 @@
-
+#!python
 # Example Usage: python3 cloudbillingtool.py tests/data/hetzner/*.csv * tests/data /tmp/cloudbillingtool_output/
 
 import sys
@@ -7,7 +7,8 @@ from pyspark import SparkContext
 import cloudbillingtool.azure_billing as azure_billing
 import cloudbillingtool.hetzner_billing as hetzner_billing
 
-sc =SparkContext()
+
+sc = SparkContext()
 
 
 if __name__ == "__main__":
@@ -25,9 +26,9 @@ if __name__ == "__main__":
 
     # Initialize the spark context.
     spark = SparkSession\
-    .builder\
-    .appName("CloudBillingTool")\
-    .getOrCreate()
+        .builder\
+        .appName("CloudBillingTool")\
+        .getOrCreate()
 
     azure_billing_with_tags = azure_billing.load_files_with_mapping(spark, azure_data, work_dir)
     hetzner_billing_with_tags = hetzner_billing.load_files_with_mapping(spark, hetzner_data,work_dir)
