@@ -1,5 +1,5 @@
 #!python
-# Example Usage: python3 submitSparkjob.py tests/data/hetzner/*.csv * tests/data /tmp/cloudbillingtool_output/
+# Example Usage: python3 spark-run-cloudbillingtool.py tests/data/hetzner/*.csv * tests/data /tmp/cloudbillingtool_output/
 
 import sys
 from pyspark.sql import SparkSession
@@ -13,7 +13,7 @@ sc = SparkContext()
 if __name__ == "__main__":
     if len(sys.argv) != 5:
         print(sys.argv)
-        print("Usage: submitSparkjob.py <hetzner_data> <azure_data> <work_dir> <output_path>", file=sys.stderr)
+        print("Usage: spark-run-cloudbillingtool.py <hetzner_data> <azure_data> <work_dir> <output_path>", file=sys.stderr)
         sys.exit(-1)
 
     hetzner_data = sys.argv[1]
