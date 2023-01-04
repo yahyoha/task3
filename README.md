@@ -1,23 +1,30 @@
-# Install
+# CloudBillingTool
+## Install
 ```
 pip install -r requirements
 ```
 
-# Run tests
+## Run tests
 ```
 python3 -m unittest
 ```
 
 
-# Run PySpark
+## Run PySpark cli
 
-Example
+You can run the cloudbillingtool locally and produce output
 ````
-python3 cloudbillingtool.py tests/data/hetzner/*.csv * tests/data /tmp/cloudbillingtool_output/
+python3 cloudbillingtool.py 
+    data/hetzner/*.csv
+    data/azure_bills/*.csv
+    mapping-tables/
+    /tmp/cloudbillingtool_output/
 ````
 
 
-# Load the unified Schema via pySpark
+## Use in the Code Load the unified Schema via pySpark
+
+You can use the following python code to process the data in a separate pyspark app
 ```
 all_bills_schema = StructType() \
     .add("Provider",StringType(), True) \
@@ -35,3 +42,11 @@ all_bills_schema = StructType() \
     .csv("path/to/data")
   
   ```
+
+
+##  Build the python module
+```
+python setup.py bdist_wheel
+```
+
+It will generate a 

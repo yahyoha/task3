@@ -1,10 +1,6 @@
 import unittest
-from unittest import mock
-from pathlib import Path
 
-from pandas import DataFrame
 from pyspark.sql import SparkSession
-import pandas as pd
 
 import cloudbillingtool.azure_billing as azure_billing
 import cloudbillingtool.hetzner_billing as hetzner_billing
@@ -28,3 +24,7 @@ class TestAllBilling(unittest.TestCase):
 
         # Todo: test the schema
         # Todo: do some nice tests
+
+
+if __name__ == '__main__':
+    unittest.main()

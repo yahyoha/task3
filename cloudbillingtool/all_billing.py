@@ -1,5 +1,3 @@
-from pyspark import rdd
-from pyspark.pandas import DataFrame
 from pyspark.sql.types import StructType, StringType, DateType, ArrayType, DecimalType
 
 all_bills_schema = StructType() \

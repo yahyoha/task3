@@ -1,10 +1,9 @@
-import re
 from pyspark import rdd
 from pyspark.pandas import DataFrame
-from pyspark.sql.functions import col, lit, array, split, array_join, array_union, concat, to_date, explode
-from pyspark.sql.types import StructType, StringType, ArrayType, DecimalType
+from pyspark.sql.functions import col, lit, to_date, explode
+from pyspark.sql.types import StructType, StringType
 import pandas as pd
-import cloudbillingtool.helper as helper
+from . import helper
 
 hetzner_schema = StructType() \
   .add("Type",StringType(), True) \
@@ -54,7 +53,7 @@ def load_files_with_mapping(spark, hetzner_data, mapping_files_path):
         .alias("hetzner_df") \
 
     joined_with_tags = hetzner_df \
-        .select(lit("hetzner").alias("provider"),
+        .select(lit("hetzner").alias("Provider"),
                 col("hetzner_df.Type"),
                 col("hetzner_df.Product").alias("ProductName"),
                 col("hetzner_df.Price").cast("float").alias("Costs"),

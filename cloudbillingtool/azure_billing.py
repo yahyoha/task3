@@ -1,9 +1,8 @@
+import pandas as pd
 from pyspark import rdd
 from pyspark.pandas import DataFrame
-from pyspark.sql.functions import col, lit, array, split, array_join, array_union, concat, to_date, explode
-from pyspark.sql.types import StructType, StringType, ArrayType, DecimalType, BooleanType
-import cloudbillingtool.helper as helper
-import pandas as pd
+from pyspark.sql.functions import col, lit, to_date, explode
+from . import helper
 
 
 def load_files(spark, azure_data, work_folder ) -> rdd :
@@ -36,7 +35,7 @@ def load_files(spark, azure_data, work_folder ) -> rdd :
             "Date": row.date,
             "CostResourceID": row.ResourceId,
             "CostResourceTag": helper.tags_from_json_string(row.tags) +
-                                helper.merge_tags_from_dt(
+                               helper.merge_tags_from_dt(
                                     resource_mapping_df,
                                     type_mapping_df,
                                     row.ResourceId,
@@ -52,7 +51,7 @@ def load_files_with_mapping(spark, azure_data, work_folder):
         .alias("azure_df") \
 
     joined_with_tags = hetzner_df \
-        .select(lit("azure").alias("provider"),
+        .select(lit("azure").alias("Provider"),
             col("azure_df.Type"),
             col("azure_df.Product").alias("ProductName"),
             col("azure_df.Costs").cast("float").alias("Costs"),
