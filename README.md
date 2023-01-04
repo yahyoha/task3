@@ -1,4 +1,5 @@
 # CloudBillingTool
+
 ## Install
 ```
 pip install -r requirements
@@ -22,7 +23,7 @@ python3 cloudbillingtool.py
 ````
 
 
-## Use in the Code Load the unified Schema via pySpark
+## Load the unified Schema via pySpark
 
 You can use the following python code to process the data in a separate pyspark app
 ```
@@ -48,5 +49,3 @@ all_bills_schema = StructType() \
 ```
 python setup.py bdist_wheel
 ```
-
-It will generate a 
