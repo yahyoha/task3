@@ -20,6 +20,9 @@ def find_tags_in_df(df, field, pattern):
     return flatten(list( map( lambda x: x.split(","), matching_rows.tolist())))
 
 
+def get_by_resourceid_in_df(df, select_field, return_field, pattern):
+    return ','.join( df.loc[df[select_field].str.contains(pattern, case=False)][return_field].values )
+
 def merge_tags_from_dt(resource_mapping_df, type_mapping_df, cost_resource_id, row_type):
     return (list(set(find_tags_in_df(resource_mapping_df, "CostResourceID",
                               cost_resource_id) +

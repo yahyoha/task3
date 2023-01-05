@@ -30,7 +30,7 @@ def load_files(spark, hetzner_data, work_folder ) -> rdd :
         .map(lambda row: {
             "Type": row.Type,
             "Price": row.Price,
-            "Product": row.Product,
+            "Product": helper.get_by_resourceid_in_df(resource_mapping_df, 'CostResourceID', 'Produkt', helper.extract_costresourceid(row.Description) ),
             "Description": row.Description,
             "StartDate": row.StartDate,
             "EndDate": row.EndDate,
