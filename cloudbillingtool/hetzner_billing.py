@@ -61,6 +61,6 @@ def load_files_with_mapping(spark, hetzner_data, mapping_files_path):
                 col("hetzner_df.Quantity").cast("float").alias("Quantity"),
                 to_date(col("hetzner_df.StartDate"), "yyyy-MM-dd").alias("Date"),
                 col("hetzner_df.CostResourceID").alias("CostResourceID"),
-                explode("hetzner_df.CostResourceTag").alias("CostResourceTag"))
+                col("hetzner_df.CostResourceTag").alias("CostResourceTag"))
 
     return joined_with_tags

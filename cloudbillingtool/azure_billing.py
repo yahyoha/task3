@@ -59,6 +59,6 @@ def load_files_with_mapping(spark, azure_data, work_folder):
             col("azure_df.Quantity").cast("float").alias("Quantity"),
             to_date(col("azure_df.Date"), "MM/dd/yyyy").alias("Date"),
             col("azure_df.CostResourceID").alias("CostResourceID"),
-            explode("azure_df.CostResourceTag").alias("CostResourceTag"))
+            col("azure_df.CostResourceTag").alias("CostResourceTag"))
 
     return joined_with_tags

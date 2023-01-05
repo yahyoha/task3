@@ -1,11 +1,15 @@
 import unittest
 import sys
 import os
+
+import pandas as pd
 from pyspark.sql import SparkSession
 
-from cloudbillingtool import hetzner_billing
-
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from cloudbillingtool import azure_billing
+from cloudbillingtool import hetzner_billing
+from cloudbillingtool import helper
 
 spark = SparkSession \
     .builder \
@@ -32,9 +36,9 @@ class TestHetznerBilling(unittest.TestCase):
         rowDescription='Cloud-Projekt "JJ" (01.12.2021 - 31.12.2021)'
         rowType='Cloud-Projekt "NBA"'
 
-        tags = list(set(hetzner_billing.find_tags_in_df(resource_mapping_df, "CostResourceID",
-                                               hetzner_billing.extract_costresourceid(rowDescription)) +
-                            hetzner_billing.find_tags_in_df(type_mapping_df, "Type", rowType))) + ['']
+        tags = list(set(helper.find_tags_in_df(resource_mapping_df, "CostResourceID",
+                                               helper.extract_costresourceid(rowDescription)) +
+                            helper.find_tags_in_df(type_mapping_df, "Type", rowType))) + ['']
         expected = ['PROD', 'IT-OPS', 'TEST', 'DEV', ''];
 
         tags.sort()
