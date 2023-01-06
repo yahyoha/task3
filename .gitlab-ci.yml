@@ -1,6 +1,6 @@
 image: python:3.8
 
-build-job:
+build:
   stage: build
   script:
     - pip install poetry twine
