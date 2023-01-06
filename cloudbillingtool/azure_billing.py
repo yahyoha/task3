@@ -16,10 +16,6 @@ def load_files(spark, azure_data, work_folder ) -> rdd :
         .withColumn("effectivePrice",col("effectivePrice").cast("decimal(12,8)")) \
         .withColumn("quantity", col("quantity").cast("decimal(12,8)"))\
         .withColumn("costInBillingCurrency", col("costInBillingCurrency").cast("decimal(12,8)"))\
-        .withColumn("costInUsd", col("costInUsd").cast("decimal(12,8)")) \
-        .withColumn("paygCostInBillingCurrency", col("paygCostInBillingCurrency").cast("decimal(12,8)")) \
-        .withColumn("paygCostInUsd",  col("paygCostInUsd").cast("double")) \
-        .withColumn("exchangeRatePricingToBilling", col("exchangeRatePricingToBilling").cast("double")) \
         .withColumn("isAzureCreditEligible", col("isAzureCreditEligible").cast("boolean")) \
         .withColumn("PayGPrice", col("PayGPrice").cast("decimal(12,8)")) \
         .withColumn("unitPrice", col("unitPrice").cast("decimal(12,8)")) \
