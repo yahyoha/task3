@@ -1,13 +1,12 @@
 [tool.poetry]
 name = "cloudbillingtool"
-version = "1.9.1"
+version = "1.9.2"
 description = "Visualizes costs across cloud providers"
 authors = ["Kay Fleischmann <k.fleischmann.extern@senec.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.9"
-
+python = "^3.8"
 
 [build-system]
 requires = ["poetry-core"]
