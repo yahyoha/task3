@@ -16,8 +16,6 @@ def load_files(spark, azure_data, work_folder ) -> rdd :
         .withColumn("effectivePrice",col("effectivePrice").cast("decimal(12,8)")) \
         .withColumn("quantity", col("quantity").cast("decimal(12,8)"))\
         .withColumn("costInBillingCurrency", col("costInBillingCurrency").cast("decimal(12,8)"))\
-        .withColumn("isAzureCreditEligible", col("isAzureCreditEligible").cast("boolean")) \
-        .withColumn("PayGPrice", col("PayGPrice").cast("decimal(12,8)")) \
         .withColumn("unitPrice", col("unitPrice").cast("decimal(12,8)")) \
         .rdd \
         .map(lambda row: {
@@ -27,6 +25,7 @@ def load_files(spark, azure_data, work_folder ) -> rdd :
             "UnitPrice": row.unitPrice,
             "Quantity": row.quantity,
             "Product": row.ProductName,
+            "Date": row.date,
             "Date": row.date,
             "CostResourceID": row.ResourceId,
             "CostResourceTag": helper.tags_from_json_string(row.tags) +
