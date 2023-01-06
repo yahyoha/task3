@@ -3,6 +3,7 @@ import sys
 import os
 
 import pandas as pd
+from pyspark.sql.functions import col, concat_ws
 from pyspark.sql import SparkSession
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
@@ -25,7 +26,10 @@ class TestHetznerBilling(unittest.TestCase):
         for row in rows:
             print(row)
 
-        hetzner_billing_with_tags.write.mode('overwrite').options( delimiter='\t').csv("/tmp/cloudbillingtool/hetzner_data")
+        hetzner_billing_with_tags \
+            .withColumn("CostResourceTag", concat_ws(",", col("CostResourceTag")))\
+            .write.mode('overwrite').options( delimiter='\t').csv("/tmp/cloudbillingtool/hetzner_data")
+
 
     def testRowTagExtraction(self):
         mapping_files_path = "tests/data"
@@ -39,7 +43,7 @@ class TestHetznerBilling(unittest.TestCase):
         tags = list(set(helper.find_tags_in_df(resource_mapping_df, "CostResourceID",
                                                helper.extract_costresourceid(rowDescription)) +
                             helper.find_tags_in_df(type_mapping_df, "Type", rowType))) + ['']
-        expected = ['PROD', 'IT-OPS', 'TEST', 'DEV', ''];
+        expected = ['', 'BACKUP', 'BI', 'CPO', 'Energiemarkt', 'IT-OPS', 'Integration', 'Marketing', 'Reklamation'];
 
         tags.sort()
         expected.sort()
