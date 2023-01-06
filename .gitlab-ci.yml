@@ -12,7 +12,7 @@ build:
       - dist/*.whl
 
 deploy:
-  image: mcr.microsoft.com/azure-cli
+  image: mcr.microsoft.com/azure-cli:2.41.0
   stage: deploy
   script:
     - az login --service-principal -u ${AZ_APP_ID} -p ${AZ_SECRET} --tenant ${AZ_TENANT}
