@@ -1,6 +1,7 @@
-release:
-  stage: deploy
-  image: python:3.8
+image: python:3.8
+
+build-job:
+  stage: build
   script:
     - pip install poetry twine
     - poetry version ${BUMP_RULE}  # missing a step to commit this change!
@@ -8,6 +9,9 @@ release:
     - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --verbose --repository-url https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/pypi dist/*
     - PACKAGE_FILE=$(ls dist/*.whl)
     - echo The package file is $PACKAGE_FILE
-#    - az login --tenant $AZ_TENANT0
-#  only:
-#    - tags
+
+deploy:
+  stage: deploy
+  script:
+    - az synapse workspace-package upload --workspace-name $SYNAPSE_WORKSPACE_NAME --package dist/*.whl
+  when: manual
