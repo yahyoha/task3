@@ -6,5 +6,5 @@ release:
     - poetry version ${BUMP_RULE}  # missing a step to commit this change!
     - poetry build
     - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --verbose --repository-url https://gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/pypi dist/*
-  only:
-    - tags
+#  only:
+#    - tags
