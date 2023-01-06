@@ -21,4 +21,6 @@ class TestAzureBilling(unittest.TestCase):
         for row in rows:
             print(row)
 
-        azure_billing_with_tags.write.mode('overwrite').options( delimiter='\t').csv("/tmp/cloudbillingtool/azure_data")
+        azure_billing_with_tags.select()
+
+        #azure_billing_with_tags.write.mode('overwrite').options( delimiter='\t').csv("/tmp/cloudbillingtool/azure_data")

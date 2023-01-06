@@ -17,6 +17,7 @@ spark = SparkSession \
     .appName("sparkTest") \
     .getOrCreate()
 
+
 class TestAllBilling(unittest.TestCase):
 
     def testHelperMappingGetByResourceId(self):
