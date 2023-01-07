@@ -2,7 +2,8 @@ stages:
   - upload
   - build
   - test
-  - deploy_synapse
+  - deploy_synapse_package
+  - deploy_synapse_notebook
 
 
 upload:
