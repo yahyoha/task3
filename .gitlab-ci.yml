@@ -1,6 +1,13 @@
-image: python:3.8
+
+upload:
+  image: mcr.microsoft.com/azure-cli:2.41.0
+  stage: upload
+  script:
+    - az login --service-principal -u ${AZ_APP_ID} -p ${AZ_SECRET} --tenant ${AZ_TENANT}
+    - az storage blob directory upload -c mappingfiles --account-name ${AZ_STORAGE_ACCOUNT} -s "data/mappingfiles/" -d ""
 
 build:
+  image: python:3.8
   stage: build
   script:
     - pip install poetry twine
