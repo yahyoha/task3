@@ -1,9 +1,30 @@
 # CloudBillingTool
 
+```
+git clone .
+```
+
 ## Install
+
+### Infrastructure
 ```
-pip install -r requirements
+cd terraform/
+terraform init
+terraform plan
+terraform validate
+terraform apply
 ```
+
+
+### CloudBillingTool App
+```
+python setup.py bdist_wheel
+```
+
+### Setup Grafana
+
+Tbd
+
 
 ## Run tests
 ```
