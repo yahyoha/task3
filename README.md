@@ -8,7 +8,7 @@ git clone .
 
 ### Infrastructure
 ```
-cd terraform/
+clone terraform-repo
 terraform init
 terraform plan
 terraform validate

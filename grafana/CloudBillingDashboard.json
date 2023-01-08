@@ -1,0 +1,894 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 15,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "datasource": {
+        "type": "grafana-azure-data-explorer-datasource",
+        "uid": "KglswTp4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "noValue": "No Tag",
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "currencyEUR"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sum_Costs"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Costs"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.3.2-67a213dc85",
+      "targets": [
+        {
+          "database": "senecallbillsv2",
+          "datasource": {
+            "type": "grafana-azure-data-explorer-datasource",
+            "uid": "KglswTp4k"
+          },
+          "expression": {
+            "from": {
+              "property": {
+                "name": "allbillsv3",
+                "type": "string"
+              },
+              "type": "property"
+            },
+            "groupBy": {
+              "expressions": [
+                {
+                  "property": {
+                    "name": "Date",
+                    "type": "dateTime"
+                  },
+                  "type": "groupBy"
+                }
+              ],
+              "type": "and"
+            },
+            "reduce": {
+              "expressions": [
+                {
+                  "property": {
+                    "name": "Costs",
+                    "type": "number"
+                  },
+                  "reduce": {
+                    "name": "sum",
+                    "type": "function"
+                  },
+                  "type": "reduce"
+                }
+              ],
+              "type": "and"
+            },
+            "where": {
+              "expressions": [
+                {
+                  "expressions": [
+                    {
+                      "operator": {
+                        "labelValue": "$Provider",
+                        "name": "==",
+                        "value": "'$Provider'"
+                      },
+                      "property": {
+                        "name": "Provider",
+                        "type": "string"
+                      },
+                      "type": "operator"
+                    }
+                  ],
+                  "type": "or"
+                },
+                {
+                  "expressions": [
+                    {
+                      "operator": {
+                        "name": "has",
+                        "value": ""
+                      },
+                      "property": {
+                        "name": "CostResourceTag[\"`indexer`\"]",
+                        "type": "string"
+                      },
+                      "type": "operator"
+                    }
+                  ],
+                  "type": "or"
+                }
+              ],
+              "type": "and"
+            }
+          },
+          "pluginVersion": "4.1.10",
+          "query": "allbillsv3\n| where $__timeFilter(Date)\n| where Provider == '$Provider'\n| where CostResourceTag has ('${CostResourceTagsList:raw}')\n| summarize sum(Costs) by Date",
+          "querySource": "raw",
+          "rawMode": true,
+          "refId": "A",
+          "resultFormat": "table"
+        }
+      ],
+      "title": "Cost by Provider and Tag",
+      "transformations": [
+        {
+          "id": "convertFieldType",
+          "options": {
+            "conversions": [
+              {
+                "destinationType": "string",
+                "targetField": "CostResourceTag"
+              }
+            ],
+            "fields": {}
+          }
+        }
+      ],
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-data-explorer-datasource",
+        "uid": "KglswTp4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": [],
+          "unit": "currencyEUR"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 11,
+        "x": 12,
+        "y": 0
+      },
+      "id": 14,
+      "options": {
+        "displayLabels": [
+          "name"
+        ],
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "values": [
+            "value"
+          ]
+        },
+        "pieType": "pie",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.3.2-67a213dc85",
+      "targets": [
+        {
+          "database": "senecallbillsv2",
+          "datasource": {
+            "type": "grafana-azure-data-explorer-datasource",
+            "uid": "KglswTp4k"
+          },
+          "expression": {
+            "from": {
+              "property": {
+                "name": "allbillsv3",
+                "type": "string"
+              },
+              "type": "property"
+            },
+            "groupBy": {
+              "expressions": [],
+              "type": "and"
+            },
+            "reduce": {
+              "expressions": [],
+              "type": "and"
+            },
+            "where": {
+              "expressions": [],
+              "type": "and"
+            }
+          },
+          "pluginVersion": "4.1.10",
+          "query": "allbillsv3\n| where $__timeFilter(Date)\n| summarize sum(Costs) by Provider",
+          "querySource": "raw",
+          "rawMode": false,
+          "refId": "A",
+          "resultFormat": "table"
+        }
+      ],
+      "title": "Total Costs by Provider",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-data-explorer-datasource",
+        "uid": "KglswTp4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "currencyEUR"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sum_Costs"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Cost"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 7
+      },
+      "id": 12,
+      "options": {
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "database": "senecallbillsv2",
+          "datasource": {
+            "type": "grafana-azure-data-explorer-datasource",
+            "uid": "KglswTp4k"
+          },
+          "expression": {
+            "from": {
+              "property": {
+                "name": "allbillsv3",
+                "type": "string"
+              },
+              "type": "property"
+            },
+            "groupBy": {
+              "expressions": [
+                {
+                  "property": {
+                    "name": "Date",
+                    "type": "dateTime"
+                  },
+                  "type": "groupBy"
+                }
+              ],
+              "type": "and"
+            },
+            "reduce": {
+              "expressions": [
+                {
+                  "property": {
+                    "name": "Costs",
+                    "type": "number"
+                  },
+                  "reduce": {
+                    "name": "sum",
+                    "type": "function"
+                  },
+                  "type": "reduce"
+                }
+              ],
+              "type": "and"
+            },
+            "where": {
+              "expressions": [
+                {
+                  "expressions": [
+                    {
+                      "operator": {
+                        "labelValue": "hetzner",
+                        "name": "==",
+                        "value": "hetzner"
+                      },
+                      "property": {
+                        "name": "Provider",
+                        "type": "string"
+                      },
+                      "type": "operator"
+                    }
+                  ],
+                  "type": "or"
+                }
+              ],
+              "type": "and"
+            }
+          },
+          "pluginVersion": "4.1.10",
+          "query": "allbillsv3\n| where $__timeFilter(Date)\n| where Provider == 'hetzner'\n| summarize sum(Costs) by Date",
+          "querySource": "visual",
+          "rawMode": false,
+          "refId": "A",
+          "resultFormat": "table"
+        }
+      ],
+      "title": "Hetzner Costs Per Day",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-data-explorer-datasource",
+        "uid": "KglswTp4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "currencyEUR"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sum_Costs"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Cost"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 11,
+        "x": 12,
+        "y": 7
+      },
+      "id": 16,
+      "options": {
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "database": "senecallbillsv2",
+          "datasource": {
+            "type": "grafana-azure-data-explorer-datasource",
+            "uid": "KglswTp4k"
+          },
+          "expression": {
+            "from": {
+              "property": {
+                "name": "allbillsv3",
+                "type": "string"
+              },
+              "type": "property"
+            },
+            "groupBy": {
+              "expressions": [
+                {
+                  "property": {
+                    "name": "Date",
+                    "type": "dateTime"
+                  },
+                  "type": "groupBy"
+                }
+              ],
+              "type": "and"
+            },
+            "reduce": {
+              "expressions": [
+                {
+                  "property": {
+                    "name": "Costs",
+                    "type": "number"
+                  },
+                  "reduce": {
+                    "name": "sum",
+                    "type": "function"
+                  },
+                  "type": "reduce"
+                }
+              ],
+              "type": "and"
+            },
+            "where": {
+              "expressions": [
+                {
+                  "expressions": [
+                    {
+                      "operator": {
+                        "labelValue": "azure",
+                        "name": "==",
+                        "value": "azure"
+                      },
+                      "property": {
+                        "name": "Provider",
+                        "type": "string"
+                      },
+                      "type": "operator"
+                    }
+                  ],
+                  "type": "or"
+                }
+              ],
+              "type": "and"
+            }
+          },
+          "pluginVersion": "4.1.10",
+          "query": "allbillsv3\n| where $__timeFilter(Date)\n| where Provider == 'azure'\n| summarize sum(Costs) by Date",
+          "querySource": "raw",
+          "rawMode": false,
+          "refId": "A",
+          "resultFormat": "table"
+        }
+      ],
+      "title": "Azure Costs Per Day",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-data-explorer-datasource",
+        "uid": "KglswTp4k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "currencyEUR"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "sum_Costs"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Cost"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 23,
+        "x": 0,
+        "y": 15
+      },
+      "id": 18,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.97,
+        "groupWidth": 0.7,
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "auto",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "9.3.2-67a213dc85",
+      "targets": [
+        {
+          "database": "senecallbillsv2",
+          "datasource": {
+            "type": "grafana-azure-data-explorer-datasource",
+            "uid": "KglswTp4k"
+          },
+          "expression": {
+            "from": {
+              "property": {
+                "name": "allbillsv3",
+                "type": "string"
+              },
+              "type": "property"
+            },
+            "groupBy": {
+              "expressions": [
+                {
+                  "property": {
+                    "name": "CostResourceTag[\"`indexer`\"]",
+                    "type": "string"
+                  },
+                  "type": "groupBy"
+                }
+              ],
+              "type": "and"
+            },
+            "reduce": {
+              "expressions": [
+                {
+                  "property": {
+                    "name": "Costs",
+                    "type": "number"
+                  },
+                  "reduce": {
+                    "name": "sum",
+                    "type": "function"
+                  },
+                  "type": "reduce"
+                }
+              ],
+              "type": "and"
+            },
+            "where": {
+              "expressions": [
+                {
+                  "expressions": [
+                    {
+                      "operator": {
+                        "labelValue": "$Provider",
+                        "name": "==",
+                        "value": "'$Provider'"
+                      },
+                      "property": {
+                        "name": "Provider",
+                        "type": "string"
+                      },
+                      "type": "operator"
+                    }
+                  ],
+                  "type": "or"
+                }
+              ],
+              "type": "and"
+            }
+          },
+          "pluginVersion": "4.1.10",
+          "query": "allbillsv3\n| where $__timeFilter(Date)\n| where Provider == '$Provider'\n| mv-expand array_1 = CostResourceTag\n| summarize sum(Costs) by tostring(array_1)",
+          "querySource": "visual",
+          "rawMode": false,
+          "refId": "A",
+          "resultFormat": "table"
+        }
+      ],
+      "title": "Summary of Cost by CostResourceTag",
+      "type": "barchart"
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 37,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allValue": "",
+        "current": {
+          "selected": false,
+          "text": "BACKUP",
+          "value": "BACKUP"
+        },
+        "datasource": {
+          "type": "grafana-azure-data-explorer-datasource",
+          "uid": "KglswTp4k"
+        },
+        "definition": "costresourcetags | summarize by CostResourceTag",
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "name": "CostResourceTagsList",
+        "options": [],
+        "query": "costresourcetags | summarize by CostResourceTag",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "azure",
+          "value": "azure"
+        },
+        "datasource": {
+          "type": "grafana-azure-data-explorer-datasource",
+          "uid": "KglswTp4k"
+        },
+        "definition": "allbillsv3| summarize by Provider",
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "name": "Provider",
+        "options": [],
+        "query": "allbillsv3| summarize by Provider",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "SenecBillingDashBoard",
+  "uid": "i260_op4z",
+  "version": 54,
+  "weekStart": ""
+}
