@@ -45,5 +45,5 @@ deploy_synapse_notebook:
   stage: deploy_synapse_notebook
   script:
     - az login --service-principal -u ${AZ_APP_ID} -p ${AZ_SECRET} --tenant ${AZ_TENANT}
-    - az synapse notebook create --workspace-name $SYNAPSE_WORKSPACE_NAME --name RunCloudBillingTool --file @"notebooks/RunCloudBillingTool.ipynb"
+    - az synapse notebook create --workspace-name $SYNAPSE_WORKSPACE_NAME --name RunCloudBillingTool --file @"notebooks/RunCloudBillingTool.ipynb" --spark-pool-name cbtparkpool
   when: manual
