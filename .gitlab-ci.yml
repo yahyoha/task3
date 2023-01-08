@@ -11,7 +11,7 @@ upload:
   stage: upload
   script:
     - az login --service-principal -u ${AZ_APP_ID} -p ${AZ_SECRET} --tenant ${AZ_TENANT}
-    - az storage fs directory upload -f mappingfiles --account-name ${AZ_STORAGE_ACCOUNT} -s "mappingfiles/*" -d "" --recursive
+    - az storage fs directory upload -f metadata --account-name ${AZ_STORAGE_ACCOUNT} -s "mappingfiles" -d "" --recursive
 
 
 build:
