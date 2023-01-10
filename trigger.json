@@ -1,12 +1,12 @@
 {
-    "name": "Trigger-Monthly",
+    "name": "TriggerCloudBillingTool",
     "properties": {
         "annotations": [],
         "runtimeState": "Stopped",
         "pipelines": [
             {
                 "pipelineReference": {
-                    "referenceName": "TriggerCloudBillingToolNotebook",
+                    "referenceName": "CloudBillingToolPipeline",
                     "type": "PipelineReference"
                 }
             }
@@ -16,13 +16,8 @@
             "recurrence": {
                 "frequency": "Month",
                 "interval": 1,
-                "startTime": "2023-01-10T00:51:00Z",
-                "timeZone": "UTC",
-                "schedule": {
-                    "monthDays": [
-                        1
-                    ]
-                }
+                "startTime": "2023-01-10T20:50:00Z",
+                "timeZone": "UTC"
             }
         }
     }
