@@ -4,6 +4,7 @@ stages:
   - test
   - deploy_synapse_package
   - deploy_synapse_notebook
+  - deploy_trigger
 
 
 upload:
@@ -46,4 +47,13 @@ deploy_synapse_notebook:
   script:
     - az login --service-principal -u ${AZ_APP_ID} -p ${AZ_SECRET} --tenant ${AZ_TENANT}
     - az synapse notebook create --workspace-name $SYNAPSE_WORKSPACE_NAME --name RunCloudBillingTool --file @"notebooks/RunCloudBillingTool.ipynb" --spark-pool-name cbtparkpool
+  when: manual
+
+deploy_trigger:
+  image: mcr.microsoft.com/azure-cli:2.41.0
+  stage: deploy_trigger
+  script:
+    - az login --service-principal -u ${AZ_APP_ID} -p ${AZ_SECRET} --tenant ${AZ_TENANT}
+    - az synapse trigger delete --workspace-name $SYNAPSE_WORKSPACE_NAME --name RunCloudBillingToolTrigger --yes
+    - az synapse notebook trigger create --name RunCloudBillingToolTrigger --notebook-name RunCloudBillingTool --workspace-name $SYNAPSE_WORKSPACE_NAME --recurrence "59 23 28-31 * *"
   when: manual
