@@ -50,7 +50,7 @@ deploy_synapse_notebook:
   when: manual
 
 deploy_trigger:
-  image: mcr.microsoft.com/azure-cli:2.41.0
+  image: mcr.microsoft.com/azure-cli:2.43.0
   stage: deploy_trigger
   script:
     - az login --service-principal -u ${AZ_APP_ID} -p ${AZ_SECRET} --tenant ${AZ_TENANT}
