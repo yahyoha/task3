@@ -12,4 +12,4 @@ COPY ./ /app/
 
 RUN pip install -r /app/requirements.txt
 
-CMD ["python", "spark-run-cloudbillingtool.py", "/data/hetzner/*.csv", "/data/azure/*.csv", "/metadata", "/output/" ]
+CMD ["python", "cloudbillingtool-run.py", "--hetzner_data", "/data/hetzner/*.csv", "--azure_data", "/data/azure/*.csv", "--aws_data", "", "--metadata", "/metadata", "--output_path", "/output/" ]

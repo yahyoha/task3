@@ -46,9 +46,9 @@ def load_files(spark, hetzner_data, work_folder ) -> rdd :
         })
 
 
-def load_files_with_mapping(spark, hetzner_data, mapping_files_path):
+def load_files_with_mapping(spark, hetzner_data, metadata_folder):
     hetzner_df: DataFrame = \
-        load_files(spark, hetzner_data, mapping_files_path)\
+        load_files(spark, hetzner_data, metadata_folder+"/mappingfiles")\
         .toDF()\
         .alias("hetzner_df") \
 

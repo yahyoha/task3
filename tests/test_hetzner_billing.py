@@ -32,7 +32,7 @@ class TestHetznerBilling(unittest.TestCase):
 
 
     def testRowTagExtraction(self):
-        mapping_files_path = "tests/metadata"
+        mapping_files_path = "tests/metadata/mappingfiles"
 
         resource_mapping_df = pd.read_csv(mapping_files_path + "/resource_mapping.csv", sep='\t')
         type_mapping_df = pd.read_csv(mapping_files_path + "/type_mapping.csv", sep='\t')

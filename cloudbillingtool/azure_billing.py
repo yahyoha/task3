@@ -38,21 +38,21 @@ def load_files(spark, azure_data, work_folder ) -> rdd :
       })
 
 
-def load_files_with_mapping(spark, azure_data, work_folder):
+def load_files_with_mapping(spark, azure_data, metadata_folder):
     hetzner_df: DataFrame = \
-        load_files(spark, azure_data, work_folder)\
+        load_files(spark, azure_data, metadata_folder+"/mappingfiles")\
         .toDF()\
         .alias("azure_df") \
 
     joined_with_tags = hetzner_df \
         .select(lit("azure").alias("Provider"),
-            col("azure_df.Type"),
-            col("azure_df.Product").alias("ProductName"),
-            col("azure_df.Costs").cast("float").alias("Costs"),
-            col("azure_df.UnitPrice").cast("float").alias("UnitPrice"),
-            col("azure_df.Quantity").cast("float").alias("Quantity"),
-            to_date(col("azure_df.Date"), "MM/dd/yyyy").alias("Date"),
-            col("azure_df.CostResourceID").alias("CostResourceID"),
-            col("azure_df.CostResourceTag").alias("CostResourceTag"))
+                col("azure_df.Type"),
+                col("azure_df.Product").alias("ProductName"),
+                col("azure_df.Costs").cast("float").alias("Costs"),
+                col("azure_df.UnitPrice").cast("float").alias("UnitPrice"),
+                col("azure_df.Quantity").cast("float").alias("Quantity"),
+                to_date(col("azure_df.Date"), "MM/dd/yyyy").alias("Date"),
+                col("azure_df.CostResourceID").alias("CostResourceID"),
+                col("azure_df.CostResourceTag").alias("CostResourceTag"))
 
     return joined_with_tags

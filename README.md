@@ -3,6 +3,22 @@
 ```
 git clone .
 ```
+## Usage
+```
+usage: cloudbillingtool-run.py [-h] [--hetzner_data HETZNER_DATA] [--azure_data AZURE_DATA] [--aws_data AWS_DATA] [--metadata METADATA] [--output_path OUTPUT_PATH]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  --hetzner_data HETZNER_DATA
+                        Path to Hetzner data files
+  --azure_data AZURE_DATA
+                        Path to Azure data files
+  --aws_data AWS_DATA   Path to AWS data files
+  --metadata METADATA   Path to metadata (mapping files) directory
+  --output_path OUTPUT_PATH
+                        Path to output directory
+
+```
 ## Run CloudBillingTool via docker
 
 The following code will build a docker container (standalone). It needs the data mounted (eg. azure  blob storage or locally) and also the output folder
@@ -19,11 +35,10 @@ docker run --name cloudbillingtool -v ${PWD}/tests/data/:/data/ -v ${PWD}/tests/
 dockdocker stop cloudbillingtool; docker rm cloudbillingtool;  
 ```
 
-## Install
+## Install Infrastructure
 
-### Infrastructure
 ```
-clone terraform-repo
+git clone terraform-repo
 terraform init
 terraform plan
 terraform validate
@@ -45,18 +60,6 @@ Tbd
 ```
 python3 -m unittest
 ```
-
-
-## Run PySpark cli
-
-You can run the cloudbillingtool locally and produce output
-````
-python3 cloudbillingtool.py 
-    data/hetzner/*.csv
-    data/azure_bills/*.csv
-    mapping-tables/
-    /tmp/cloudbillingtool_output/
-````
 
 
 ## Load the unified Schema via pySpark into your code

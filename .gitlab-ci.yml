@@ -1,7 +1,8 @@
 stages:
-  - upload
-  - build
   - test
+  - package
+#  - build
+  - upload
   - synapse_package
   - synapse_notebook
   - synapse_pipeline
@@ -14,9 +15,15 @@ upload:
     - az login --service-principal -u ${AZ_APP_ID} -p ${AZ_SECRET} --tenant ${AZ_TENANT}
     - az storage fs directory upload -f metadata --account-name ${AZ_STORAGE_ACCOUNT} -s "mappingfiles" -d "" --recursive
 
-build:
+test:
   image: python:3.8
-  stage: build
+  stage: test
+  script:
+    - echo "Not implemented"
+
+package:
+  image: python:3.8
+  stage: package
   script:
     - pip install poetry twine
     - python setup.py bdist_wheel
@@ -24,12 +31,6 @@ build:
   artifacts:
     paths:
       - dist/*.whl
-
-test:
-  image: python:3.8
-  stage: test
-  script:
-    - echo "Not implemented"
 
 synapse_package:
   image: mcr.microsoft.com/azure-cli:2.41.0
