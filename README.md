@@ -8,7 +8,7 @@
   <h2 align="center" style="text-align: center;">Cloud Billing Tool</h2>
 
   <p align="center">
-   Solution to manage your various Cloud Provider's bill effectively
+   Unify Your Cloud Costs, Simplify Your Bill Management with our Cloud Billing Tool
   </p>
 </div>
 
