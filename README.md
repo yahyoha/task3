@@ -1,6 +1,29 @@
-# CloudBillingTool
+<!-- PROJECT LOGO -->
+<br />
+<div align="center">
+  
+  <img src="multi-cloud-billing.jpg" alt="Logo" width="60" height="60">
+  
+
+  <h2 align="center" style="text-align: center;">Cloud Billing Tool</h2>
+
+  <p align="center">
+   Solution to manage your various Cloud Provider's bill effectively
+  </p>
+</div>
+
+
 
 ![alt text](CloudBillingToolArchitecture.png)
+
+## Overview of the Key Components
+
+**Azure Synapse Analytics** is a fully managed, cloud-based analytics platform that allows users to ingest, prepare, manage, and serve data for immediate business intelligence and machine learning needs. It provides a unified experience for data integration and analytics by allowing us to query data using familiar T-SQL and also leveraging built-in connectors and integration with other Azure services. It also provides both serverless and provisioned options, which allows users to scale their usage and costs based on their specific needs.
+
+
+Synapse (notebook, pipeline, trigger)
+Data Epxlorer (Kusto)
+Grafana
 
 ```
 git clone .
@@ -38,12 +61,7 @@ dockdocker stop cloudbillingtool; docker rm cloudbillingtool;
 ```
 
 ## Setup CloudBillingTool with Synapse
-Azure Synapse Analytics is a fully managed, cloud-based analytics platform that allows users to ingest, prepare, manage, and serve data for immediate business intelligence and machine learning needs. It provides a unified experience for data integration and analytics by allowing us to query data using familiar T-SQL and also leveraging built-in connectors and integration with other Azure services. It also provides both serverless and provisioned options, which allows users to scale their usage and costs based on their specific needs.
 
-
-Synapse (notebook, pipeline, trigger)
-Data Epxlorer (Kusto)
-Grafana
 
 ### Deploy Infrastructure to Azure
 ```
