@@ -14,7 +14,7 @@
   <summary>Table of Contents</summary>
   <ol>
     <li><a href="#architecture">Architecture</a></li>
-    <li><a href="#Overview of the Key Components">Overview of the Key Components</a></li>
+    <li><a href="#Overview-of-the-Key-Components">Overview of the Key Components</a></li>
     <li><a href="#installation">Installation</a></li>
     <li><a href="#license">License</a></li>
   </ol>
@@ -25,6 +25,7 @@
 <div align="center">
 <img src="CloudBillingToolArchitecture.png" alt="Architecture" width="500" height="350">
 </div>
+<div text-align: justify; text-justify: inter-word;>
 
 ## Overview of the Key Components
 
@@ -42,7 +43,7 @@
 
 
 Grafana
-
+</div>
 ```
 git clone .
 ```
