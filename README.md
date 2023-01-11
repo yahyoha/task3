@@ -22,9 +22,9 @@
 
 
 ## Architecture
-
-<img src="CloudBillingToolArchitecture.png" alt="Architecture" width="600" height="250">
-
+<div align="center">
+<img src="CloudBillingToolArchitecture.png" alt="Architecture" width="500" height="350">
+</div>
 
 ## Overview of the Key Components
 
@@ -34,7 +34,7 @@
 
 **In Azure Synapse, pipelines** are a fundamental building block for creating and organizing data integration and data flow workflows. They allow us to group activities together to create a cohesive and repeatable data processing job. Pipelines in Azure Synapse are based on the pipeline concept in Azure Data Factory, which has been integrated into the Azure Synapse Studio environment to provide a more streamlined and unified experience for working with data integration and data flow tasks. The low-code approach of pipelines in Azure Synapse makes it easy for developers and data engineers to quickly create and manage data integration and data flow workflows without needing to write a lot of complex code.
 
-**Triggers** in Synapse pipelines determine when a particular pipeline(s) should be run. In an Azure Synapse environment, pipeline runs are typically instantiated by passing arguments to parameters that you define in the pipeline. You can execute a pipeline either manually or by using a trigger in a JSON definition.
+**Triggers** in Synapse pipelines determine when a particular pipeline(s) should be run. In an Azure Synapse environment, pipeline runs are typically instantiated by passing arguments to parameters that we define in the pipeline. We can execute a pipeline either manually or by using a trigger in a JSON definition.
 
 **Azure Data Explorer** is a fully managed, high-performance, big data analytics platform that makes it easy to analyze high volumes of data in near real time. The Azure Data Explorer toolbox gives you an end-to-end solution for data ingestion, query, visualization, and management.
 
