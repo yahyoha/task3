@@ -1,0 +1,21 @@
+kind: CronJob
+metadata:
+  name: cloudbillingtool-cronjob
+spec:
+  schedule: "0 0 * * *" # schedule is in cron format, runs every day at midnight
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: cloudbillingtool
+            image: python:3.8-slim-buster
+            command: ["python", "cloudbillingtool-run.py", "--hetzner_data", "/config/hetzner/*.csv", "--azure_data", "/config/azure/*.csv", "--aws_data", "", "--metadata", "/config/metadata", "--output_path", "/config/output/" ]
+            volumeMounts:
+              - name: config-volume
+                mountPath: /config
+          volumes:
+            - name: config-volume
+              configMap:
+                name: cloudbillingtool-configmap
+          restartPolicy: OnFailure
