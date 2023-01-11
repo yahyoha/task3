@@ -14,7 +14,7 @@
   <summary>Table of Contents</summary>
   <ol>
     <li><a href="#architecture">Architecture</a></li>
-    <li><a href="#keyComponents">Overview of the Key Components</a></li>
+    <li><a href="#Overview of the Key Components">Overview of the Key Components</a></li>
     <li><a href="#installation">Installation</a></li>
     <li><a href="#license">License</a></li>
   </ol>
