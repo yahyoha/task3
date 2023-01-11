@@ -14,7 +14,7 @@
   <summary>Table of Contents</summary>
   <ol>
     <li><a href="#architecture">Architecture</a></li>
-    <li><a href="#Key-Components">Overview of the Key Components</a></li>
+    <li><a href="#Overview-of-the-Key-Components">Overview of the Key Components</a></li>
     <li><a href="#installation">Installation</a></li>
     <li><a href="#license">License</a></li>
   </ol>
@@ -27,7 +27,7 @@
 </div>
 
 
-## Key Components
+## Overview of the Key Components
 
 **Azure Synapse Analytics** is a fully managed, cloud-based analytics platform that allows users to ingest, prepare, manage, and serve data for immediate business intelligence and machine learning needs. It provides a unified experience for data integration and analytics by allowing us to query data using familiar T-SQL and also leveraging built-in connectors and integration with other Azure services. It also provides both serverless and provisioned options, which allows users to scale their usage and costs based on their specific needs.
 
@@ -44,6 +44,10 @@
 
 **Grafana** is an open-source platform for data visualization and monitoring. It provides a powerful and flexible way to create, explore, and share dashboards and metrics with a wide range of data sources. It allows users to create and publish dashboards that can be easily shared and embedded in other web pages, and it offers a wide range of visualization options such as bar graphs, line graphs, heat maps, and pie charts to help you display your data in the most meaningful and useful way possible. Grafana also provide alerting feature, which is useful for monitoring critical systems and services and alerting team members when certain conditions are met or when certain thresholds are exceeded, which allowing proactive intervention to help avoid issues and minimize downtime.
 
+
+## Installation
+
+How to install ?
 
 ```
 git clone .
