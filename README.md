@@ -1,9 +1,11 @@
 # CloudBillingTool
 
+![alt text](CloudBillingToolArchitecture.png)
+
 ```
 git clone .
 ```
-## Usage
+## Run CloudBillingTool as cli
 ```
 usage: cloudbillingtool-run.py [-h] [--hetzner_data HETZNER_DATA] [--azure_data AZURE_DATA] [--aws_data AWS_DATA] [--metadata METADATA] [--output_path OUTPUT_PATH]
 
@@ -35,8 +37,14 @@ docker run --name cloudbillingtool -v ${PWD}/tests/data/:/data/ -v ${PWD}/tests/
 dockdocker stop cloudbillingtool; docker rm cloudbillingtool;  
 ```
 
-## Install Infrastructure
+## Setup CloudBillingTool with Synapse
 
+Explain what compnentds are used.
+Synapse (notebook, pipeline, trigger)
+Data Epxlorer (Kusto)
+Grafana
+
+### Deploy Infrastructure to Azure
 ```
 git clone terraform-repo
 terraform init
@@ -45,22 +53,26 @@ terraform validate
 terraform apply
 ```
 
+### Install CloudBillingTool to Azure Synapse
 
-### CloudBillingTool App
+
+### Setup Grafana with Kusto Connection
+Tbd
+
+
+## Setup CloudBillingTool with K8s
+
+
+# Development 
+## Build
 ```
 python setup.py bdist_wheel
 ```
-
-### Setup Grafana
-
-Tbd
-
 
 ## Run tests
 ```
 python3 -m unittest
 ```
-
 
 ## Load the unified Schema via pySpark into your code
 
@@ -81,9 +93,3 @@ all_bills_schema = StructType() \
     .schema(all_bills_schema)\
     .csv("path/to/data")
   ```
-
-
-##  Build the python module
-```
-python setup.py bdist_wheel
-```
