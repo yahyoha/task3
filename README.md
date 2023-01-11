@@ -29,8 +29,9 @@
 
 ## Overview of the Key Components
 
+<div text-align: justify; text-justify: inter-word;>
 **Azure Synapse Analytics** is a fully managed, cloud-based analytics platform that allows users to ingest, prepare, manage, and serve data for immediate business intelligence and machine learning needs. It provides a unified experience for data integration and analytics by allowing us to query data using familiar T-SQL and also leveraging built-in connectors and integration with other Azure services. It also provides both serverless and provisioned options, which allows users to scale their usage and costs based on their specific needs.
-
+</div>
 **Azure Synapse Studio Notebooks** is a feature of Azure Synapse Analytics that allows us to create, edit, and run Jupyter notebooks within the Azure Synapse Studio environment. The Azure Synapse Studio Notebooks environment provides a web-based interface for creating and running Jupyter notebooks, and it also integrates with other Azure services such as Azure Data Factory, Azure Databricks, and Azure Machine Learning. It also allows us to connect to various data sources, including Synapse SQL, Synapse Analytics (formerly SQL DW), Azure Data Lake Storage, Azure Cosmos DB, and more. With the integration of Synapse Studio notebooks, you can execute the notebooks in parallel with Azure Synapse Spark or SQL and make use of the Spark or SQL pool for processing.
 
 **In Azure Synapse, pipelines** are a fundamental building block for creating and organizing data integration and data flow workflows. They allow us to group activities together to create a cohesive and repeatable data processing job. Pipelines in Azure Synapse are based on the pipeline concept in Azure Data Factory, which has been integrated into the Azure Synapse Studio environment to provide a more streamlined and unified experience for working with data integration and data flow tasks. The low-code approach of pipelines in Azure Synapse makes it easy for developers and data engineers to quickly create and manage data integration and data flow workflows without needing to write a lot of complex code.
@@ -44,6 +45,7 @@
 
 Grafana
 </div>
+
 ```
 git clone .
 ```
