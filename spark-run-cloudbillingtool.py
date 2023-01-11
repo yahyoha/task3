@@ -4,6 +4,7 @@
 import sys
 from pyspark.sql import SparkSession
 from pyspark import SparkContext
+from pyspark.sql.functions import col, concat_ws
 from cloudbillingtool import azure_billing
 from cloudbillingtool import hetzner_billing
 
@@ -35,5 +36,8 @@ if __name__ == "__main__":
     # combine azure with hetzner billing
     all_billing = azure_billing_with_tags.rdd.union(hetzner_billing_with_tags.rdd)
 
+    # Map the CostResourceTag to an joined Tag list as a string
     # write to file
-    all_billing.toDF().write.mode('overwrite').options(delimiter='\t', header=True).csv(output_path+"/all_billing")
+    all_billing.toDF() \
+        .withColumn("CostResourceTag", concat_ws(";", col("CostResourceTag"))) \
+        .write.mode('overwrite').options(delimiter='\t', header=True).csv(output_path+"/all_billing")

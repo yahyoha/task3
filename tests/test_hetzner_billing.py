@@ -21,7 +21,7 @@ spark = SparkSession \
 class TestHetznerBilling(unittest.TestCase):
 
     def testHetznerBillingLoad(self):
-        hetzner_billing_with_tags = hetzner_billing.load_files_with_mapping(spark, "tests/data/hetzner/*.csv", "tests/data")
+        hetzner_billing_with_tags = hetzner_billing.load_files_with_mapping(spark, "tests/data/hetzner/*.csv", "tests/metadata")
         rows = hetzner_billing_with_tags.rdd.map( lambda x: x).collect()
         for row in rows:
             print(row)
@@ -32,7 +32,7 @@ class TestHetznerBilling(unittest.TestCase):
 
 
     def testRowTagExtraction(self):
-        mapping_files_path = "tests/data"
+        mapping_files_path = "tests/metadata"
 
         resource_mapping_df = pd.read_csv(mapping_files_path + "/resource_mapping.csv", sep='\t')
         type_mapping_df = pd.read_csv(mapping_files_path + "/type_mapping.csv", sep='\t')
@@ -48,4 +48,4 @@ class TestHetznerBilling(unittest.TestCase):
         tags.sort()
         expected.sort()
 
-        self.assertEqual(tags, expected )
+        self.assertEqual(tags, expected)

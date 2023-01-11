@@ -2,7 +2,7 @@
 import unittest
 import os
 import sys
-
+from pyspark.sql.functions import col, concat_ws
 import pandas as pd
 from pyspark.sql import SparkSession
 
@@ -21,18 +21,21 @@ spark = SparkSession \
 class TestAllBilling(unittest.TestCase):
 
     def testHelperMappingGetByResourceId(self):
-        resource_mapping_df = pd.read_csv( "tests/data/resource_mapping.csv", sep='\t')
-        type_mapping_df = pd.read_csv( "tests/data/type_mapping.csv", sep='\t')
+        resource_mapping_df = pd.read_csv("tests/metadata/resource_mapping.csv", sep='\t')
+        type_mapping_df = pd.read_csv("tests/metadata/type_mapping.csv", sep='\t')
 
         self.assertEqual( "kvm3", helper.get_by_resourceid_in_df(resource_mapping_df, 'CostResourceID', 'Produkt', '#1048599' ) )
 
     def testAllBillingLoad(self):
-        azure_billing_with_tags = azure_billing.load_files_with_mapping(spark, "tests/data/azure/*.csv", "tests/data")
-        hetzner_billing_with_tags = hetzner_billing.load_files_with_mapping(spark, "tests/data/hetzner/*.csv", "tests/data")
+        azure_billing_with_tags = azure_billing.load_files_with_mapping(spark, "tests/data/azure/*.csv", "tests/metadata")
+        hetzner_billing_with_tags = hetzner_billing.load_files_with_mapping(spark, "tests/data/hetzner/*.csv", "tests/metadata")
 
         all_billing = azure_billing_with_tags.rdd.union(hetzner_billing_with_tags.rdd)
 
-        for row in all_billing.toDF().collect():
+        output_df = all_billing.toDF() \
+            .withColumn("CostResourceTag", concat_ws(";", col("CostResourceTag"))) \
+
+        for row in output_df.collect():
             print(row)
 
         # Todo: test the schema

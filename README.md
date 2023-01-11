@@ -3,6 +3,22 @@
 ```
 git clone .
 ```
+## Run CloudBillingTool via docker
+
+The following code will build a docker container (standalone). It needs the data mounted (eg. azure  blob storage or locally) and also the output folder
+```
+# build image
+docker build -t cloudbillingtool ./
+
+# run the container
+bash docker-run.sh
+#or
+docker run --name cloudbillingtool -v ${PWD}/tests/data/:/data/ -v ${PWD}/tests/metadata/:/metadata/ -v /tmp/output/:/output/ cloudbillingtool
+
+
+# cleanup
+dockdocker stop cloudbillingtool; docker rm cloudbillingtool;  
+```
 
 ## Install
 
