@@ -39,7 +39,7 @@ dockdocker stop cloudbillingtool; docker rm cloudbillingtool;
 
 ## Setup CloudBillingTool with Synapse
 
-Explain what compnentds are used.
+Component should be updated .
 Synapse (notebook, pipeline, trigger)
 Data Epxlorer (Kusto)
 Grafana
