@@ -15,7 +15,6 @@ bash docker-run.sh
 #or
 docker run --name cloudbillingtool -v ${PWD}/tests/data/:/data/ -v ${PWD}/tests/metadata/:/metadata/ -v /tmp/output/:/output/ cloudbillingtool
 
-
 # cleanup
 dockdocker stop cloudbillingtool; docker rm cloudbillingtool;  
 ```
@@ -60,7 +59,7 @@ python3 cloudbillingtool.py
 ````
 
 
-## Load the unified Schema via pySpark
+## Load the unified Schema via pySpark into your code
 
 You can use the following python code to process the data in a separate pyspark app
 ```
@@ -78,7 +77,6 @@ all_bills_schema = StructType() \
     .options(format='csv', escape="\"", header=False)\
     .schema(all_bills_schema)\
     .csv("path/to/data")
-  
   ```
 
 

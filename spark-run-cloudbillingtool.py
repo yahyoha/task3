@@ -36,7 +36,7 @@ if __name__ == "__main__":
     # combine azure with hetzner billing
     all_billing = azure_billing_with_tags.rdd.union(hetzner_billing_with_tags.rdd)
 
-    # Map the CostResourceTag to an joined Tag list as a string
+    # Map the CostResourceTag to a joined Tag list as a string
     # write to file
     all_billing.toDF() \
         .withColumn("CostResourceTag", concat_ws(";", col("CostResourceTag"))) \

@@ -2,9 +2,9 @@ stages:
   - upload
   - build
   - test
-  - deploy_synapse_package
-  - deploy_synapse_notebook
-  - deploy_pipeline
+  - synapse_package
+  - synapse_notebook
+  - synapse_pipeline
 
 
 upload:
@@ -13,7 +13,6 @@ upload:
   script:
     - az login --service-principal -u ${AZ_APP_ID} -p ${AZ_SECRET} --tenant ${AZ_TENANT}
     - az storage fs directory upload -f metadata --account-name ${AZ_STORAGE_ACCOUNT} -s "mappingfiles" -d "" --recursive
-
 
 build:
   image: python:3.8
@@ -32,18 +31,25 @@ test:
   script:
     - echo "Not implemented"
 
-
-deploy_synapse_package:
+synapse_package:
   image: mcr.microsoft.com/azure-cli:2.41.0
-  stage: deploy_synapse_package
+  stage: synapse_package
   script:
     - az login --service-principal -u ${AZ_APP_ID} -p ${AZ_SECRET} --tenant ${AZ_TENANT}
     - az synapse workspace-package upload --workspace-name $SYNAPSE_WORKSPACE_NAME --package dist/*.whl
   when: manual
 
-deploy_pipeline:
+synapse_notebook:
+  image: mcr.microsoft.com/azure-cli:2.41.0
+  stage: synapse_notebook
+  script:
+    - az login --service-principal -u ${AZ_APP_ID} -p ${AZ_SECRET} --tenant ${AZ_TENANT}
+    - az synapse notebook create --workspace-name $SYNAPSE_WORKSPACE_NAME --name RunCloudBillingTool --file @"notebooks/RunCloudBillingTool.ipynb" --spark-pool-name
+  when: manual
+
+synapse_pipeline:
   image: mcr.microsoft.com/azure-cli:2.43.0
-  stage: deploy_pipeline
+  stage: synapse_pipeline
   script:
     - az login --service-principal -u ${AZ_APP_ID} -p ${AZ_SECRET} --tenant ${AZ_TENANT}
     - az synapse pipeline create --workspace-name $SYNAPSE_WORKSPACE_NAME --name CloudBillingToolPipeline --file @"pipeline.json"
