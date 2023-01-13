@@ -47,10 +47,10 @@
 
 ## Installation
 
-How to install ?
+Please clone the repo of CloudBilling Tool.
 
 ```
-git clone .
+git clone https://gitlab.com/rocket9-code/customers/senec/cloudbillingtool-app.git
 ```
 ## Run CloudBillingTool as cli
 ```
@@ -119,10 +119,10 @@ terraform apply
 
 14. Fill up the forms as below : 
     1. Azure Cloud : Azure
-    2. Cluster URL : [CLUSTER_URL_OF_YOUR_CREATED_CLUSTER]
-    3. Tenant ID : [TENANT_ID/DIRECTORY_ID](values from step 3)
-    4. Client ID:  [APPLICATION_ID/SERVICE_PRINCIPLE_ID](values from step 3)
-    5. Client Secret : [PASSWORD_CREATED_IN_STEP](This is the 'Secret Value' from the step 5)
+    2. Cluster URL : (CLUSTER_URL_OF_OUR_CREATED_CLUSTER)
+    3. Tenant ID : (TENANT_ID/DIRECTORY_ID-values from step 3)
+    4. Client ID:  (APPLICATION_ID/SERVICE_PRINCIPLE_ID - values from step 3)
+    5. Client Secret : (PASSWORD_CREATED_IN_STEP-This is the 'Secret Value' from the step 5)
 
 15. Scroll down and stop at the section 'Default Schema Settings'.Select 'Default Database' dropdown and if the step 14 is successful we will see the name of the database from our 'Azure Data Explorer Cluster'.
 
