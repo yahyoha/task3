@@ -104,14 +104,14 @@ terraform apply
 2. Select '+New Registration'  and Give the name of your application e.g. 'SenecBillingAppV2' and click the button 'Registration.
 3. Please note the following values,APPLICATION(Client)ID and DIRECTORY(Tenant) ID from the 'App Registrations' page.
 4. Navigate to 'Certificates&Secrets' which is on the left side of the page 'SenecBillingAppV2'.
-5. Click '+ New Client Secret' and this will open a window. Fill up the form according to your custom name and clik the button 'Add'. This will create a Secret Key and Value.Save the 'Secret value'.
+5. Click '+ New Client Secret' and this will open a window. Fill up the form according to your custom name and click the button 'Add'. This will create a Secret Key and Value.Save the 'Secret value'.
 6. Navigate to the Azure Cluster created by Terraform.
 7. Select the database and navigate to the 'Permission' and give viewer permission to your application created in step 2.
 8. Go to your 'Grafana Account' and then select 'Configuration'.
 9. Select 'Plugins' Tab and Search for the plugin 'Azure Data Explorer Data Source'.Install it.
 10. Now select 'Data Sources' Tab and write 'Azure Data Explorer Data Source' in the search bar.Press 'Add Data Source' button.This will open 'Data Sources / Azure Data Explorer Datasource' page.
-11. Set the name 'cloudbillingsenecGrafanaV1' because dashboard will be using this same name.If we use our own custom name,we have to  update the dashboard's datasource and point it to our own 'Data Source Name.
-12. Navigate to the Azure Data Explorer Web UI via the Azure Portal. The AAD application that we created in step 2 needs to be given viewer access to your Azure Data Explorer database. This is done using the dot command.
+11. Set the name 'cloudbillingsenecGrafanaV1' because dashboard will be using this same name.If you use our own custom name,you have to  update the dashboard's datasource and point it to your own 'Data Source Name.
+12. Navigate to the Azure Data Explorer Web UI via the Azure Portal. The AAD application that you created in step 2 needs to be given viewer access to your Azure Data Explorer database. This is done using the dot command.
 ```
 .add database [our_db_name] viewers (‘aadapp=[our_client_id(values from step 3);our_tenant_id(values from step 3)’)
 ```
@@ -124,11 +124,11 @@ terraform apply
     4. Client ID:  (APPLICATION_ID/SERVICE_PRINCIPLE_ID - values from step 3)
     5. Client Secret : (PASSWORD_CREATED_IN_STEP-This is the 'Secret Value' from the step 5)
 
-15. Scroll down and stop at the section 'Default Schema Settings'.Select 'Default Database' dropdown and if the step 14 is successful we will see the name of the database from our 'Azure Data Explorer Cluster'.
+15. Scroll down and stop at the section 'Default Schema Settings'.Select 'Default Database' dropdown and if the step 14 is successful you will see the name of the database from your 'Azure Data Explorer Cluster'.
 
 16. Select the database and press 'Save&Test' Button.
 
-17. Navigate Back to the 'Billing Dashboard' and we will see our visualization.
+17. Navigate Back to the 'Billing Dashboard' and you will see our visualization.
   
 
 ## Setup CloudBillingTool with K8s
