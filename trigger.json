@@ -1,5 +1,4 @@
 {
-    "name": "TriggerCloudBillingTool",
     "properties": {
         "annotations": [],
         "runtimeState": "Stopped",
@@ -16,7 +15,7 @@
             "recurrence": {
                 "frequency": "Month",
                 "interval": 1,
-                "startTime": "2023-01-10T20:50:00Z",
+                "startTime": "$startTime",
                 "timeZone": "UTC"
             }
         }

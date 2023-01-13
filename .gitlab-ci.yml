@@ -61,5 +61,8 @@ synapse_pipeline:
   script:
     - az login --service-principal -u ${AZ_APP_ID} -p ${AZ_SECRET} --tenant ${AZ_TENANT}
     - az synapse pipeline create --workspace-name $SYNAPSE_WORKSPACE_NAME --name CloudBillingToolPipeline --file @"pipeline.json"
-    - az synapse trigger create --workspace-name $SYNAPSE_WORKSPACE_NAME  --name CloudBillingToolTrigger --file @"trigger.json"
+    - az synapse trigger delete --workspace-name $SYNAPSE_WORKSPACE_NAME --name CloudBillingToolTrigger --yes
+    - sed "s/\$startTime/$(date +%s)/g" trigger.json | tee trigger_with_startTime.json
+    - cat trigger_with_startTime.json
+    - az synapse trigger create --workspace-name $SYNAPSE_WORKSPACE_NAME  --name CloudBillingToolTrigger --file @"trigger_with_startTime.json"
   when: manual
