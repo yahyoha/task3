@@ -96,9 +96,6 @@ terraform validate
 terraform apply
 ```
 
-### Install CloudBillingTool to Azure Synapse
-
-
 ### Setup Grafana with Kusto Connection
 1. Select 'App Registrations' service from your Azure Portal.
 2. Select '+New Registration'  and Give the name of your application e.g. 'SenecBillingAppV2' and click the button 'Registration.
