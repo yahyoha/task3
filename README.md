@@ -116,7 +116,7 @@ terraform apply
 
 14. Fill up the forms as below : 
     1. Azure Cloud : Azure
-    2. Cluster URL : (CLUSTER_URL_OF_OUR_CREATED_CLUSTER)
+    2. Cluster URL : (CLUSTER_URL_OF_OUR_YOUR_CLUSTER)
     3. Tenant ID : (TENANT_ID/DIRECTORY_ID-values from step 3)
     4. Client ID:  (APPLICATION_ID/SERVICE_PRINCIPLE_ID - values from step 3)
     5. Client Secret : (PASSWORD_CREATED_IN_STEP-This is the 'Secret Value' from the step 5)
