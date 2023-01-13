@@ -16,6 +16,7 @@
     <li><a href="#architecture">Architecture</a></li>
     <li><a href="#Overview-of-the-Key-Components">Overview of the Key Components</a></li>
     <li><a href="#installation">Installation</a></li>
+    <li><a href="#limitation">Limitation</a></li>
     <li><a href="#license">License</a></li>
   </ol>
 </details>
@@ -161,3 +162,6 @@ all_bills_schema = StructType() \
     .schema(all_bills_schema)\
     .csv("path/to/data")
   ```
+
+  ## Limitation
+  CloudBilling Tool assume that the Hetzner Data format should be formatted. To validate the data it should pass the following script []. 
