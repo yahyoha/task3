@@ -100,12 +100,33 @@ terraform apply
 
 
 ### Setup Grafana with Kusto Connection
-1. App Registration in Azure.
-2. Add Viewer Permission to the Azure Cluster Database.
-3. Run query in the created azure table to add viewer permission for Grafana.
-4. Go to Grafana.
-5. Create Data Source
+1. Select 'App Registrations' service from your Azure Portal.
+2. Create 
+3. Add Viewer Permission to the Azure Cluster Database.
+4. Run query in the created azure table to add viewer permission for Grafana.
+5. Go to your 'Grafana Account' and then select 'Configuration'.
+6. Select 'Plugins' Tab and Search for the plugin 'Azure Data Explorer Data Source'.Install it.
+7. Now select 'Data Sources' Tab and write 'Azure Data Explorer Data Source' in the search bar.Press 'Add Data Source' button.This will open 'Data Sources / Azure Data Explorer Datasource' page.
+8. Set the name 'cloudbillingsenecGrafanaV1' because dashboard will be using this same name.If we use our own custom name,we have to  update the dashboard's datasource and point it to our own 'Data Source Name.
+9. Navigate to the Azure Data Explorer Web UI via the Azure Portal. The AAD application that we created in step 1 needs to be given viewer access to your Azure Data Explorer database. This is done using the dot command.
+```
+add database your_db_name viewers (‘aadapp=your_client_id;your_tenant_id’)
+```
+10. Navigate back to your Grafana's page 'Data Sources / Azure Data Explorer Datasource' and scroll down.Stop at the section 'Connection Details'.
 
+11. Fill up the forms as below : 
+    1. Azure Cloud : Azure
+    2. Cluster URL : [CLUSTER_URL_OF_YOUR_CREATED_CLUSTER]
+    3. Tenant ID : [TENANT_ID/DIRECTORY_ID]
+    4. Client ID:  [APPLICATION_ID/SERVICE_PRINCIPLE_ID]
+    5. Client Secret : [PASSWORD_CREATED_IN_STEP]
+
+12. Scroll down and stop at the section 'Default Schema Settings'.Select 'Default Database' dropdown and if the step 11 is successful we will see the name of the database from our 'Azure Data Explorer Cluster'.
+
+13. Select the database and press 'Save&Test' Button.
+
+14. Navigate Back to the 'Billing Dashboard' and we will see our visualization.
+  
 
 ## Setup CloudBillingTool with K8s
 
