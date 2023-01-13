@@ -100,7 +100,11 @@ terraform apply
 
 
 ### Setup Grafana with Kusto Connection
-Tbd
+1. App Registration in Azure.
+2. Add Viewer Permission to the Azure Cluster Database.
+3. Run query in the created azure table to add viewer permission for Grafana.
+4. Go to Grafana.
+5. Create Data Source
 
 
 ## Setup CloudBillingTool with K8s
