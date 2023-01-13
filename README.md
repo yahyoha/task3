@@ -15,9 +15,9 @@
   <ol>
     <li><a href="#architecture">Architecture</a></li>
     <li><a href="#Overview-of-the-Key-Components">Overview of the Key Components</a></li>
+     <li><a href="#requirements">Requirements</a></li>
     <li><a href="#installation">Installation</a></li>
     <li><a href="#limitation">Limitation</a></li>
-    <li><a href="#license">License</a></li>
   </ol>
 </details>
 
@@ -45,6 +45,8 @@
 
 **Grafana** is an open-source platform for data visualization and monitoring. It provides a powerful and flexible way to create, explore, and share dashboards and metrics with a wide range of data sources. It allows users to create and publish dashboards that can be easily shared and embedded in other web pages, and it offers a wide range of visualization options such as bar graphs, line graphs, heat maps, and pie charts to help you display your data in the most meaningful and useful way possible. Grafana also provide alerting feature, which is useful for monitoring critical systems and services and alerting team members when certain conditions are met or when certain thresholds are exceeded, which allowing proactive intervention to help avoid issues and minimize downtime.
 
+ ## Requirements
+  CloudBilling Tool assume that the Hetzner Data format should be formatted. To validate the data it should pass the following script []. 
 
 ## Installation
 
@@ -163,5 +165,4 @@ all_bills_schema = StructType() \
     .csv("path/to/data")
   ```
 
-  ## Limitation
-  CloudBilling Tool assume that the Hetzner Data format should be formatted. To validate the data it should pass the following script []. 
+ 
