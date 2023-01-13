@@ -105,8 +105,8 @@ terraform apply
 3. Please note the following values,APPLICATION(Client)ID and DIRECTORY(Tenant) ID from the 'App Registrations' page.
 4. Navigate to 'Certificates&Secrets' which is on the left side of the page 'SenecBillingAppV2'.
 5. Click '+ New Client Secret' and this will open a window. Fill up the form according to your custom name and clik the button 'Add'. This will create a Secret Key and Value.Save the 'Secret value'.
-6. Navigate to the Azure Cluster and create your Cluster & Database.
-7. Select permission and give viewer permission to your application created in step 2.
+6. Navigate to the Azure Cluster created by Terraform.
+7. Select the database and navigate to the 'Permission' and give viewer permission to your application created in step 2.
 8. Go to your 'Grafana Account' and then select 'Configuration'.
 9. Select 'Plugins' Tab and Search for the plugin 'Azure Data Explorer Data Source'.Install it.
 10. Now select 'Data Sources' Tab and write 'Azure Data Explorer Data Source' in the search bar.Press 'Add Data Source' button.This will open 'Data Sources / Azure Data Explorer Datasource' page.
