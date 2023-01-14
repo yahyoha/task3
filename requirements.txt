@@ -1,3 +1,6 @@
 pyspark
 pandas~=1.5.2
 pyarrow
+boto3
+google-cloud-storage
+azure-storage-blob
