@@ -26,19 +26,6 @@ if __name__ == "__main__":
         .appName("CloudBillingTool")\
         .getOrCreate()
 
-    #clean hetzner data
-    for file in os.listdir(hetzner_data):
-        with open(hetzner_data+'/'+file) as fin, open(hetzner_data+'/cleaned_'+file, 'w') as fout:
-            lc = 0
-            for line in fin:
-                lc += line.count(',')
-                if  lc < 8:
-                    fout.write(line[:-1])
-                else:
-                    fout.write(line)
-                    lc = 0
-        os.remove(os.path.join(hetzner_data,file))
-
     # combine azure with hetzner billing
     all_billing_data = all_billing.generate_uniform_data_from(spark, azure_data, hetzner_data, aws_data, metadata_dir )
 
