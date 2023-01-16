@@ -20,21 +20,23 @@ def load_files(spark, azure_data, work_folder ) -> rdd :
         .rdd \
         .map(lambda row: {
             "Provider": "azure",
-            "Type":  "",    # Missing in Azure
+            "Type":  "",  # Missing in Azure
             "Costs": row.costInBillingCurrency,
             "UnitPrice": row.unitPrice,
             "Quantity": row.quantity,
             "Product": row.ProductName,
             "Date": row.date,
-            "Date": row.date,
             "CostResourceID": row.ResourceId,
-            "CostResourceTag": helper.tags_from_json_string(row.tags) +
-                               helper.merge_tags_from_dt(
-                                    resource_mapping_df,
-                                    type_mapping_df,
-                                    row.ResourceId,
-                                    row.ProductName
-                                )
+            "CostResourceTag": list(set(
+                [""] +
+                # no TypeMapping for Azure
+                # only mapping for CostRsourceId
+                list(resource_mapping_df.loc[resource_mapping_df['CostResourceID'] \
+                     .str.contains(row.ResourceId)]['CostResourceTag'])
+                # filter resourceMapping for costresourceid
+            )),
+            "ProductTag": list(set([""]+resource_mapping_df.loc[resource_mapping_df['CostResourceID'].str.contains(
+                helper.extract_costresourceid(row.ProductName))]['ProductTag']))
       })
 
 
@@ -53,6 +55,7 @@ def load_files_with_mapping(spark, azure_data, metadata_folder):
                 col("azure_df.Quantity").cast("float").alias("Quantity"),
                 to_date(col("azure_df.Date"), "MM/dd/yyyy").alias("Date"),
                 col("azure_df.CostResourceID").alias("CostResourceID"),
-                col("azure_df.CostResourceTag").alias("CostResourceTag"))
+                col("azure_df.CostResourceTag").alias("CostResourceTag"),
+                col("azure_df.ProductTag").alias("ProductTag"))
 
     return joined_with_tags

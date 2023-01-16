@@ -30,19 +30,20 @@ def load_files(spark, hetzner_data, work_folder ) -> rdd :
         .map(lambda row: {
             "Type": row.Type,
             "Price": row.Price,
-            "Product": helper.get_by_resourceid_in_df(resource_mapping_df, 'CostResourceID', 'Produkt', helper.extract_costresourceid(row.Description) ),
+            "Product": row.Product,
             "Description": row.Description,
             "StartDate": row.StartDate,
             "EndDate": row.EndDate,
             "Quantity": row.Quantity,
             "UnitPrice": row.UnitPrice,
             "CostResourceID":  helper.extract_costresourceid(row.Description),
-            "CostResourceTag": helper.merge_tags_from_dt(
-                                    resource_mapping_df,
-                                    type_mapping_df,
-                                    helper.extract_costresourceid(row.Description),
-                                    row.Type
-                                )
+            "CostResourceTag":   list( set(
+                                    [""] +
+                                    list(type_mapping_df.loc[type_mapping_df['Type'].str.contains( row.Type)]['CostResourceTag']) +    # filter typeMapping for rowType
+                                    list(resource_mapping_df.loc[resource_mapping_df['CostResourceID'] \
+                                         .str.contains(helper.extract_costresourceid(row.Description))]['CostResourceTag'])    # filter resourceMapping for costresourceid
+                                    )),
+            "ProductTag": list( set([""]+resource_mapping_df.loc[resource_mapping_df['CostResourceID'].str.contains(helper.extract_costresourceid(row.Description))]['ProductTag']) )
         })
 
 
@@ -61,6 +62,7 @@ def load_files_with_mapping(spark, hetzner_data, metadata_folder):
                 col("hetzner_df.Quantity").cast("float").alias("Quantity"),
                 to_date(col("hetzner_df.StartDate"), "yyyy-MM-dd").alias("Date"),
                 col("hetzner_df.CostResourceID").alias("CostResourceID"),
-                col("hetzner_df.CostResourceTag").alias("CostResourceTag"))
+                col("hetzner_df.CostResourceTag").alias("CostResourceTag"),
+                col("hetzner_df.ProductTag").alias("ProductTag"))
 
     return joined_with_tags

@@ -1,4 +1,5 @@
 #!python
+# Example ./cloudbillingtool-run.py --hetzner_data "tests/data/hetzner/*.csv" --azure_data "tests/data/azure/*.csv" --metadata "tests/metadata" --output_path "/tmp/output2"
 
 import argparse
 from pyspark.sql import SparkSession
@@ -30,7 +31,8 @@ if __name__ == "__main__":
     all_billing_data = all_billing.generate_uniform_data_from(spark, azure_data, hetzner_data, aws_data, metadata_dir )
 
     # Map the CostResourceTag to a joined Tag list as a string
-    # write to file
+    # write to file| summarize sum(Costs)
     all_billing_data.toDF() \
         .withColumn("CostResourceTag", concat_ws(";", col("CostResourceTag"))) \
+        .withColumn("ProductTag", concat_ws(";", col("ProductTag"))) \
         .write.mode('overwrite').options(delimiter='\t', header=True).csv(output_path+"/all_billing")

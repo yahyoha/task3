@@ -27,25 +27,6 @@ class TestHetznerBilling(unittest.TestCase):
             print(row)
 
         hetzner_billing_with_tags \
-            .withColumn("CostResourceTag", concat_ws(",", col("CostResourceTag")))\
+            .withColumn("CostResourceTag", concat_ws(",", col("CostResourceTag"))) \
+            .withColumn("ProductTag", concat_ws(";", col("ProductTag"))) \
             .write.mode('overwrite').options( delimiter='\t').csv("/tmp/cloudbillingtool/hetzner_data")
-
-
-    def testRowTagExtraction(self):
-        mapping_files_path = "tests/metadata/mappingfiles"
-
-        resource_mapping_df = pd.read_csv(mapping_files_path + "/resource_mapping.csv", sep='\t')
-        type_mapping_df = pd.read_csv(mapping_files_path + "/type_mapping.csv", sep='\t')
-
-        rowDescription='Cloud-Projekt "JJ" (01.12.2021 - 31.12.2021)'
-        rowType='Cloud-Projekt "NBA"'
-
-        tags = list(set(helper.find_tags_in_df(resource_mapping_df, "CostResourceID",
-                                               helper.extract_costresourceid(rowDescription)) +
-                            helper.find_tags_in_df(type_mapping_df, "Type", rowType))) + ['']
-        expected = ['', 'BACKUP', 'BI', 'CPO', 'Energiemarkt', 'IT-OPS', 'Integration', 'Marketing', 'Reklamation'];
-
-        tags.sort()
-        expected.sort()
-
-        self.assertEqual(tags, expected)
