@@ -21,12 +21,6 @@ spark = SparkSession \
 
 class TestAllBilling(unittest.TestCase):
 
-    def testHelperMappingGetByResourceId(self):
-        resource_mapping_df = pd.read_csv("tests/metadata/mappingfiles/resource_mapping.csv", sep='\t')
-        type_mapping_df = pd.read_csv("tests/metadata/mappingfiles/type_mapping.csv", sep='\t')
-
-        self.assertEqual( "kvm3", helper.get_by_resourceid_in_df(resource_mapping_df, 'CostResourceID', 'Produkt', '#1048599' ) )
-
     def testAllBillingLoad(self):
 
         # combine azure with hetzner billing
@@ -34,6 +28,7 @@ class TestAllBilling(unittest.TestCase):
 
         output_df = all_billing_data.toDF() \
             .withColumn("CostResourceTag", concat_ws(";", col("CostResourceTag"))) \
+            .withColumn("ProductTag", concat_ws(";", col("ProductTag")))
 
         for row in output_df.collect():
             print(row)

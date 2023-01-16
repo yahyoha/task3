@@ -20,6 +20,7 @@ class TestAzureBilling(unittest.TestCase):
 
         output_df = azure_billing_with_tags \
             .withColumn("CostResourceTag", concat_ws(";", col("CostResourceTag"))) \
+            .withColumn("ProductTag", concat_ws(";", col("ProductTag")))
 
         for row in output_df.collect():
             print(row)
