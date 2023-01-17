@@ -6,6 +6,8 @@ deploy_dashboard:
   image: grafana/grafana-oss
   script:
     - grafana-cli login --api-key=$GRAFANA_API_KEY
-    - grafana-cli dashboards import --file=grafana/CloudBillingDashboard.json --folder=BillingDeploy --overwrite
-  when: manual
+    - grafana-cli dashboards import --file=grafana/CloudBillingDashboard.json --folder=grafana --overwrite
+  environment:
+    name: production
+    url: https://ibrahim8.grafana.net/
 
