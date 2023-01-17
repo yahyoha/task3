@@ -3,9 +3,9 @@ stages:
 
 deploy_dashboard:
   stage: deploy_dashboard
-  image: grafana/grafana-cli
+  image: grafana/grafana-oss
   script:
     - grafana-cli login --api-key=$GRAFANA_API_KEY
-    - grafana-cli dashboards import --file=grafana/CloudBillingDashboard.json --folder=BillingDeployr --overwrite
+    - grafana-cli dashboards import --file=grafana/CloudBillingDashboard.json --folder=BillingDeploy --overwrite
   when: manual
 
