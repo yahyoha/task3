@@ -822,7 +822,7 @@
           "resultFormat": "table"
         }
       ],
-      "title": "Summary of Cost by CostResourceTag-DeployV1",
+      "title": "Summary of Cost by CostResourceTag",
       "type": "barchart"
     }
   ],
