@@ -48,7 +48,7 @@ synapse_package:
     - az synapse workspace-package upload --workspace-name $SYNAPSE_WORKSPACE_NAME --package dist/*.whl
     - PACKAGE_FILE=$(basename `ls dist/*`)
     - echo $PACKAGE_FILE
-    - apt-get update && apt-get install -y gitlab-runner
+    - apk update && apk add gitlab-runner
     - gitlab-runner variable set LAST_PACKAGE_FILE ${PACKAGE_FILE}
   when: manual
 
