@@ -35,6 +35,7 @@ upload:
   image: mcr.microsoft.com/azure-cli:2.43.0
   stage: upload
   script:
+    - echo $AZ_STORAGE_ACCOUNT
     - az login --service-principal -u ${AZ_APP_ID} -p ${AZ_SECRET} --tenant ${AZ_TENANT}
     - az storage fs directory upload -f metadata --account-name ${AZ_STORAGE_ACCOUNT} -s "mappingfiles" -d "" --recursive
   when: manual
