@@ -66,5 +66,5 @@ synapse_pipeline:
     - sed "s/\$startTime/$(date -u +"%Y-%m-%dT%H:%M:%SZ")/g" trigger.json | tee trigger_with_startTime.json
     - cat trigger_with_startTime.json
     - az synapse trigger create --workspace-name $SYNAPSE_WORKSPACE_NAME --name CloudBillingToolTrigger --file @"trigger_with_startTime.json"
-    - az synapse trigger start --workspace-name $SYNAPSE_WORKSPACE_NAME $SYNAPSE_WORKSPACE_NAME --name CloudBillingToolTrigger
+    - az synapse trigger start --workspace-name $SYNAPSE_WORKSPACE_NAME --name CloudBillingToolTrigger
   when: manual
