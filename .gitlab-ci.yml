@@ -54,6 +54,7 @@ synapse_notebook:
   script:
     - az login --service-principal -u ${AZ_APP_ID} -p ${AZ_SECRET} --tenant ${AZ_TENANT}
     - az synapse notebook create --workspace-name $SYNAPSE_WORKSPACE_NAME --name RunCloudBillingTool --file @"notebooks/RunCloudBillingTool.ipynb" --spark-pool-name ${SYNAPSE_SPARK_POOL_NAME}
+    - az synapse notebook set --name RunCloudBillingTool --workspace-name $SYNAPSE_WORKSPACE_NAME --spark-pool-name ${SYNAPSE_SPARK_POOL_NAME}
   when: manual
 
 synapse_pipeline:
