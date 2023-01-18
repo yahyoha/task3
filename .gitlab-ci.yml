@@ -71,5 +71,7 @@ upload_dashboard:
   image: python:3.8-slim-buster
   stage: upload_dashboard
   script:
+    - apt-get update && apt-get install -y openjdk-11-jdk && \
+    - pip install -r requirements.txt
     - python upload_grafana_dashboard.py --dashboard_dir grafana/ --dashboard_name CloudBillingDashboard.json
   when: manual

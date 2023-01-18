@@ -46,7 +46,7 @@
 **Grafana** is an open-source platform for data visualization and monitoring. It provides a powerful and flexible way to create, explore, and share dashboards and metrics with a wide range of data sources.
 
  ## Requirements
-  CloudBilling Tool assume that the Hetzner Data format should be formatted. To validate the data it should pass the following script []. 
+  CloudBilling Tool assume that the Hetzner Data format should be formatted. To validate the data it should pass the following script 'hetzner_fix_data.py'.Please check this file for further instructions. 
 
 ## Installation
 
