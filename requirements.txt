@@ -4,3 +4,6 @@ pyarrow
 boto3
 google-cloud-storage
 azure-storage-blob
+requests
+json
+argparse
