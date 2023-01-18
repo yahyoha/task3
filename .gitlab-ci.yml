@@ -9,12 +9,13 @@ stages:
   - upload_dashboard
 
 test:
-  image: python:3.8.5
+  image: python:3.8
   stage: test
   script:
     - SPARK_HOST=$(hostname)
     - echo "127.0.0.1  $SPARK_HOST" >> /etc/hosts
     - cat /etc/hosts
+    - apt-get install build-essential && \
     - apt-get update && apt-get install -y openjdk-11-jdk && \
     - apt-get clean;
     - pip install -r requirements.txt
