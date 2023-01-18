@@ -6,7 +6,6 @@ import json
 
 # this will upload the dashboard to grafana
 def upload_dashboard(dashboard_path, api_url, api_key):
-    # Get Grafana API URL and API key from GitLab environment variables
 
     # Set headers for API call
     headers = {
@@ -36,8 +35,8 @@ def main():
     args = parser.parse_args()
     dashboard_path = args.dashboard_dir + args.dashboard_name
 
-    api_url = os.environ['GRAFANA_API_URL']
-    api_key = os.environ['GRAFANA_API_KEY']
+    api_url = args.grafana_api
+    api_key = args.grafana_key
 
     upload_dashboard(dashboard_path, api_url, api_key)
 
