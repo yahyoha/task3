@@ -822,7 +822,7 @@
           "resultFormat": "table"
         }
       ],
-      "title": "Summary of Cost by CostResourceTag",
+      "title": "Summary of Cost by CostResourceTag-DeployV1",
       "type": "barchart"
     }
   ],
@@ -887,7 +887,7 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "SenecBillingDashBoard-Deploy",
+  "title": "SenecBillingDashBoard",
   "uid": "i260_op4z",
   "version": 54,
   "weekStart": ""
