@@ -15,8 +15,7 @@ test:
     - SPARK_HOST=$(hostname)
     - echo "127.0.0.1  $SPARK_HOST" >> /etc/hosts
     - cat /etc/hosts
-    - apt-get update && apt-get install -y gcc && \
-    - apt-get install -y openjdk-11-jdk && \
+    - apt-get update && apt-get install gcc -y && \
     - apt-get clean;
     - pip install -r requirements.txt
     - python -m unittest
