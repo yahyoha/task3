@@ -1,13 +1,75 @@
 stages:
-  - deploy_dashboard
+  - test
+  - package
+  #  - build
+  - upload
+  - synapse_package
+  - synapse_notebook
+  - synapse_pipeline
+  - upload_dashboard
 
-deploy_dashboard:
-  stage: deploy_dashboard
-  image: grafana/grafana-oss
+test:
+  image: python:3.8-slim-buster
+  stage: test
   script:
-    - grafana-cli login --api-key=$GRAFANA_API_KEY
-    - grafana-cli dashboards import --file=grafana/CloudBillingDashboard.json --folder=grafana --overwrite
-  environment:
-    name: production
-    url: https://ibrahim8.grafana.net/
+    - SPARK_HOST=$(hostname)
+    - echo "127.0.0.1  $SPARK_HOST" >> /etc/hosts
+    - cat /etc/hosts
+    - apt-get update && apt-get install -y openjdk-11-jdk && \
+    - apt-get clean;
+    - pip install -r requirements.txt
+    - python -m unittest
 
+package:
+  image: python:3.8
+  stage: package
+  script:
+    - pip install poetry twine
+    - python setup.py bdist_wheel
+    - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token python -m twine upload --verbose --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
+  artifacts:
+    paths:
+      - dist/*.whl
+
+upload:
+  image: mcr.microsoft.com/azure-cli:2.43.0
+  stage: upload
+  script:
+    - az login --service-principal -u ${AZ_APP_ID} -p ${AZ_SECRET} --tenant ${AZ_TENANT}
+    - az storage fs directory upload -f metadata --account-name ${AZ_STORAGE_ACCOUNT} -s "mappingfiles" -d "" --recursive
+  when: manual
+
+synapse_package:
+  image: mcr.microsoft.com/azure-cli:2.41.0
+  stage: synapse_package
+  script:
+    - az login --service-principal -u ${AZ_APP_ID} -p ${AZ_SECRET} --tenant ${AZ_TENANT}
+    - az synapse workspace-package upload --workspace-name $SYNAPSE_WORKSPACE_NAME --package dist/*.whl
+  when: manual
+
+synapse_notebook:
+  image: mcr.microsoft.com/azure-cli:2.41.0
+  stage: synapse_notebook
+  script:
+    - az login --service-principal -u ${AZ_APP_ID} -p ${AZ_SECRET} --tenant ${AZ_TENANT}
+    - az synapse notebook create --workspace-name $SYNAPSE_WORKSPACE_NAME --name RunCloudBillingTool --file @"notebooks/RunCloudBillingTool.ipynb" --spark-pool-name
+  when: manual
+
+synapse_pipeline:
+  image: mcr.microsoft.com/azure-cli:2.43.0
+  stage: synapse_pipeline
+  script:
+    - az login --service-principal -u ${AZ_APP_ID} -p ${AZ_SECRET} --tenant ${AZ_TENANT}
+    - az synapse pipeline create --workspace-name $SYNAPSE_WORKSPACE_NAME --name CloudBillingToolPipeline --file @"pipeline.json"
+    - az synapse trigger delete --workspace-name $SYNAPSE_WORKSPACE_NAME --name CloudBillingToolTrigger --yes
+    - sed "s/\$startTime/$(date +%s)/g" trigger.json | tee trigger_with_startTime.json
+    - cat trigger_with_startTime.json
+    - az synapse trigger create --workspace-name $SYNAPSE_WORKSPACE_NAME  --name CloudBillingToolTrigger --file @"trigger_with_startTime.json"
+  when: manual
+
+upload_dashboard:
+  image: python:3.8-slim-buster
+  stage: upload_dashboard
+  script:
+    - python upload_grafana_dashboard.py --dashboard_dir grafana/ --dashboard_name CloudBillingDashboard.json
+  when: manual
