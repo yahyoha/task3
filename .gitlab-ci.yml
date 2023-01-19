@@ -1,3 +1,4 @@
+
 stages:
   - test
   - package
@@ -35,6 +36,7 @@ upload:
   image: mcr.microsoft.com/azure-cli:2.43.0
   stage: upload
   script:
+    - echo $AZ_STORAGE_ACCOUNT
     - az login --service-principal -u ${AZ_APP_ID} -p ${AZ_SECRET} --tenant ${AZ_TENANT}
     - az storage fs directory upload -f metadata --account-name ${AZ_STORAGE_ACCOUNT} -s "mappingfiles" -d "" --recursive
   when: manual
@@ -45,6 +47,8 @@ synapse_package:
   script:
     - az login --service-principal -u ${AZ_APP_ID} -p ${AZ_SECRET} --tenant ${AZ_TENANT}
     - az synapse workspace-package upload --workspace-name $SYNAPSE_WORKSPACE_NAME --package dist/*.whl
+    - PACKAGE_FILE_CURRENT=$(basename `ls dist/*`)
+    - echo $PACKAGE_FILE_CURRENT
   when: manual
 
 synapse_notebook:
@@ -52,7 +56,8 @@ synapse_notebook:
   stage: synapse_notebook
   script:
     - az login --service-principal -u ${AZ_APP_ID} -p ${AZ_SECRET} --tenant ${AZ_TENANT}
-    - az synapse notebook create --workspace-name $SYNAPSE_WORKSPACE_NAME --name RunCloudBillingTool --file @"notebooks/RunCloudBillingTool.ipynb" --spark-pool-name
+    - az synapse notebook create --workspace-name $SYNAPSE_WORKSPACE_NAME --name RunCloudBillingTool --file @"notebooks/RunCloudBillingTool.ipynb" --spark-pool-name ${SYNAPSE_SPARK_POOL_NAME}
+    - az synapse notebook set --name RunCloudBillingTool --workspace-name $SYNAPSE_WORKSPACE_NAME --spark-pool-name ${SYNAPSE_SPARK_POOL_NAME} --file @"notebooks/RunCloudBillingTool.ipynb"
   when: manual
 
 synapse_pipeline:
@@ -62,17 +67,8 @@ synapse_pipeline:
     - az login --service-principal -u ${AZ_APP_ID} -p ${AZ_SECRET} --tenant ${AZ_TENANT}
     - az synapse pipeline create --workspace-name $SYNAPSE_WORKSPACE_NAME --name CloudBillingToolPipeline --file @"pipeline.json"
     - az synapse trigger delete --workspace-name $SYNAPSE_WORKSPACE_NAME --name CloudBillingToolTrigger --yes
-    - sed "s/\$startTime/$(date +%s)/g" trigger.json | tee trigger_with_startTime.json
+    - sed "s/\$startTime/$(date -u +"%Y-%m-%dT%H:%M:%SZ")/g" trigger.json | tee trigger_with_startTime.json
     - cat trigger_with_startTime.json
-    - az synapse trigger create --workspace-name $SYNAPSE_WORKSPACE_NAME  --name CloudBillingToolTrigger --file @"trigger_with_startTime.json"
-  when: manual
-
-upload_dashboard:
-  image: python:3.8-slim-buster
-  stage: upload_dashboard
-  script:
-    - apt-get update && apt-get install -y build-essential openjdk-11-jdk && \
-    - apt-get clean;
-    - pip install -r requirements.txt
-    - python upload_grafana_dashboard.py --dashboard_dir grafana/ --dashboard_name CloudBillingDashboard.json --grafana_api ${GRAFANA_API_URL} --grafana_key ${GRAFANA_API_KEY}
+    - az synapse trigger create --workspace-name $SYNAPSE_WORKSPACE_NAME --name CloudBillingToolTrigger --file @"trigger_with_startTime.json"
+    - az synapse trigger start --workspace-name $SYNAPSE_WORKSPACE_NAME --name CloudBillingToolTrigger
   when: manual

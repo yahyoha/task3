@@ -19,10 +19,6 @@
                         "type": "NotebookReference"
                     },
                     "snapshot": true,
-                    "sparkPool": {
-                        "referenceName": "cbtparkpool",
-                        "type": "BigDataPoolReference"
-                    },
                     "executorSize": "Small",
                     "conf": {
                         "spark.dynamicAllocation.enabled": false

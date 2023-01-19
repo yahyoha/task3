@@ -13,10 +13,18 @@
         "type": "ScheduleTrigger",
         "typeProperties": {
             "recurrence": {
-                "frequency": "Month",
+                "frequency": "Day",
                 "interval": 1,
                 "startTime": "$startTime",
-                "timeZone": "UTC"
+                "timeZone": "UTC",
+                "schedule": {
+                    "minutes": [
+                        0
+                    ],
+                    "hours": [
+                        5
+                    ]
+                }
             }
         }
     }
