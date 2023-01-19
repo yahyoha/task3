@@ -80,5 +80,5 @@ upload_dashboard:
     - apt-get update && apt-get install -y build-essential openjdk-11-jdk && \
     - apt-get clean;
     - pip install -r requirements.txt
-    - python upload_grafana_dashboard.py --dashboard_dir grafana/ --dashboard_name CloudBillingDashboard.json --grafana_api ${GRAFANA_API_URL} --grafana_key ${GRAFANA_API_KEY}
+    - python upload_grafana_dashboard.py --dashboard_dir grafana/ --dashboard_name CloudBillingDashboard.json --grafana_api ${GRAFANA_API_URL} --grafana_key ${GRAFANA_API_KEY} --grafana_folder_name ${GRAFANA_FOLDER}
   when: manual
