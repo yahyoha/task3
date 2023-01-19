@@ -49,7 +49,6 @@ synapse_package:
     - az synapse workspace-package upload --workspace-name $SYNAPSE_WORKSPACE_NAME --package dist/*.whl
     - PACKAGE_FILE_CURRENT=$(basename `ls dist/*`)
     - echo $PACKAGE_FILE_CURRENT
-    - echo "Todo: store this file in a variable for the next run, and remove old file. "
   when: manual
 
 synapse_notebook:
