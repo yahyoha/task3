@@ -1,5 +1,5 @@
 variables:
-  $PACKAGE_FILE:
+  PACKAGE_FILE:
     value: ""
     protect: true
 
@@ -54,7 +54,6 @@ synapse_package:
     - PACKAGE_FILE_CURRENT=$(basename `ls dist/*`)
     - echo $PACKAGE_FILE_CURRENT
   when: manual
-
   environment:
     variables:
       PACKAGE_FILE: $PACKAGE_FILE_CURRENT
