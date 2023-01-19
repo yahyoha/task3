@@ -1,7 +1,3 @@
-variables:
-  PACKAGE_FILE:
-    value: ""
-    protect: true
 
 stages:
   - test
@@ -53,10 +49,8 @@ synapse_package:
     - az synapse workspace-package upload --workspace-name $SYNAPSE_WORKSPACE_NAME --package dist/*.whl
     - PACKAGE_FILE_CURRENT=$(basename `ls dist/*`)
     - echo $PACKAGE_FILE_CURRENT
+    - echo "Todo: store this file in a variable for the next run, and remove old file. "
   when: manual
-  environment:
-    variables:
-      PACKAGE_FILE: $PACKAGE_FILE_CURRENT
 
 synapse_notebook:
   image: mcr.microsoft.com/azure-cli:2.41.0
