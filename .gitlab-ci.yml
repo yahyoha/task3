@@ -1,3 +1,8 @@
+variables:
+  $PACKAGE_FILE:
+    value: ""
+    protect: true
+
 stages:
   - test
   - package
@@ -46,11 +51,13 @@ synapse_package:
   script:
     - az login --service-principal -u ${AZ_APP_ID} -p ${AZ_SECRET} --tenant ${AZ_TENANT}
     - az synapse workspace-package upload --workspace-name $SYNAPSE_WORKSPACE_NAME --package dist/*.whl
-    - PACKAGE_FILE=$(basename `ls dist/*`)
-    - echo $PACKAGE_FILE
-    - apk update && apk add gitlab-runner
-    - gitlab-runner variable set LAST_PACKAGE_FILE ${PACKAGE_FILE}
+    - PACKAGE_FILE_CURRENT=$(basename `ls dist/*`)
+    - echo $PACKAGE_FILE_CURRENT
   when: manual
+
+  environment:
+    variables:
+      PACKAGE_FILE: $PACKAGE_FILE_CURRENT
 
 synapse_notebook:
   image: mcr.microsoft.com/azure-cli:2.41.0
