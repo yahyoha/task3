@@ -2,12 +2,12 @@
 stages:
   - test
   - package
-#  - build
+  #  - build
   - upload
   - synapse_package
   - synapse_notebook
   - synapse_pipeline
-
+  - upload_dashboard
 
 test:
   image: python:3.8-slim-buster
@@ -16,7 +16,7 @@ test:
     - SPARK_HOST=$(hostname)
     - echo "127.0.0.1  $SPARK_HOST" >> /etc/hosts
     - cat /etc/hosts
-    - apt-get update && apt-get install -y openjdk-11-jdk && \
+    - apt-get update && apt-get install -y build-essential openjdk-11-jdk && \
     - apt-get clean;
     - pip install -r requirements.txt
     - python -m unittest
