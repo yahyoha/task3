@@ -131,7 +131,9 @@ terraform apply
 17. Navigate Back to the 'Billing Dashboard' and you will see our visualization.
   
 
-## Setup CloudBillingTool with K8s
+## Setup CloudBillingTool with K8s and SQL Server
+
+Todo: Architecture Diagram
 
 
 # Development 

@@ -1,0 +1,8 @@
+image:
+  image: docker-registry.senec.com/kfleischmann/cloudbillingtool-app
+
+  # defaults to Charts appVersion
+  version: latest
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: [ ]

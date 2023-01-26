@@ -1,27 +1,28 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: cloudbillingtool
+  name: {{ .Chart.Name }}
   labels:
-    app: cloudbillingtool
+    app: {{ .Chart.Name }}
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: cloudbillingtool
+      app: {{ .Chart.Name }}
   template:
     metadata:
       labels:
-        app: cloudbillingtool
+        app: {{ .Chart.Name }}
     spec:
       containers:
-        - name: cloudbillingtool
-          image: python:3.8-slim-buster
+        - name: {{ .Chart.Name }}
+          image: "{{ .Values.image.image }}:{{ .Values.image.version | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["python", "cloudbillingtool-run.py", "--hetzner_data", "/config/hetzner/*.csv", "--azure_data", "/config/azure/*.csv", "--aws_data", "", "--metadata", "/config/metadata", "--output_path", "/config/output/" ]
-          volumeMounts:
-            - name: config-volume
-              mountPath: /config
-      volumes:
-        - name: config-volume
-          configMap:
-            name: cloudbillingtool-configmap
+#          volumeMounts:
+#            - name: config-volume
+#              mountPath: /config
+#      volumes:
+#        - name: config-volume
+#          configMap:
+#            name: cloudbillingtool-configmap

@@ -1,0 +1,31 @@
+version: '3'
+services:
+  sql1:
+    image: mcr.microsoft.com/mssql/server:latest
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=chiiKu4x*1
+    ports:
+      - 1433:1433
+    command:
+      - /opt/mssql/bin/sqlservr
+    tty: true
+    stdin_open: true
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=password
+    volumes:
+      - grafana-data:/var/lib/grafana
+    networks:
+      - grafana-network
+
+volumes:
+  grafana-data:
+
+networks:
+  grafana-network:

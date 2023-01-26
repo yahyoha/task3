@@ -2,7 +2,7 @@
 stages:
   - test
   - package
-  #  - build
+  - build_image
   - upload
   - synapse_package
   - synapse_notebook
@@ -31,6 +31,22 @@ package:
   artifacts:
     paths:
       - dist/*.whl
+
+
+services:
+  - docker:dind
+
+build_image:
+  image: docker:latest
+  stage: build_image
+  script:
+    - docker login -u gitlab-ci-token -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker build -t $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA -t $CI_REGISTRY_IMAGE:latest .
+    - docker push $CI_REGISTRY_IMAGE:$CI_COMMIT_SHA
+    - docker push $CI_REGISTRY_IMAGE:latest
+  only:
+    - master
+
 
 upload:
   image: mcr.microsoft.com/azure-cli:2.43.0
@@ -80,5 +96,5 @@ upload_dashboard:
     - apt-get update && apt-get install -y build-essential openjdk-11-jdk && \
     - apt-get clean;
     - pip install -r requirements.txt
-    - python upload_grafana_dashboard.py --dashboard_dir grafana/ --dashboard_name CloudBillingDashboard.json --grafana_api ${GRAFANA_API_URL} --grafana_key ${GRAFANA_API_KEY} --grafana_folder_name ${GRAFANA_FOLDER}
+    - python upload_grafana_dashboard.py --dashboard_dir grafana/ --dashboard_name CloudBillingDashboard.json --grafana_api ${GRAFANA_API_URL} --grafana_key ${GRAFANA_API_KEY}
   when: manual
