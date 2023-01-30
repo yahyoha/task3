@@ -18,7 +18,6 @@ if __name__ == "__main__":
     parser.add_argument('--jdbc_user', help='JDBC User')
     parser.add_argument('--jdbc_password', help='JDBC Password')
 
-
     args = parser.parse_args()
 
     hetzner_data = args.hetzner_data
@@ -28,14 +27,14 @@ if __name__ == "__main__":
     output_path = args.output_path
 
     # Initialize the spark context.
+
     spark = SparkSession\
         .builder\
-        .appName("CloudBillingTool") \
+        .appName("CloudBillingTool")\
+        .config("spark.driver.extraClassPath", "jar/mssql-jdbc.jar")\
         .getOrCreate()
 
-    spark.sparkContext.addPyFile("lib/spark-mssql-connector-1.0.2.jar")
-
-    print("Spark Version "+spark.version)
+    print("Spark Version #"+spark.version) # spark 3.3.1
 
     # combine azure with hetzner billing
     all_billing_data = all_billing.generate_uniform_data_from(spark, azure_data, hetzner_data, aws_data, metadata_dir )
@@ -47,15 +46,10 @@ if __name__ == "__main__":
             .withColumn("CostResourceTag", concat_ws(";", col("CostResourceTag"))) \
             .withColumn("ProductTag", concat_ws(";", col("ProductTag"))) \
             .write \
-            .jdbc("com.microsoft.sqlserver.jdbc.spark") \
+            .format("jdbc") \
             .mode("overwrite") \
             .option("url", args.jdbc_url) \
             .option("dbtable", args.jdbc_table) \
-            .option("user", args.jdbc_user) \
-            .option("password", args.jdbc_password) \
-            .option("tableLock", "true") \
-            .option("batchsize", "500") \
-            .option("reliabilityLevel", "BEST_EFFORT") \
             .save()
 
     if args.output_path:

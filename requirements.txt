@@ -6,3 +6,4 @@ google-cloud-storage
 azure-storage-blob
 requests
 argparse
+pyodbc

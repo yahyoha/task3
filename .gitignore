@@ -134,7 +134,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+#jar/
 lib64/
 parts/
 sdist/
