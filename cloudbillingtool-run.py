@@ -3,8 +3,19 @@
 
 import argparse
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col, concat_ws
+from pyspark.sql.functions import col, concat_ws, explode, size
 from cloudbillingtool import all_billing
+
+from pyspark.sql.functions import udf, col
+from pyspark.sql.types import ArrayType, StringType
+
+
+def non_empty_filter(col):
+    return [x for x in col if x]
+
+
+non_empty_filter_udf = udf(non_empty_filter, ArrayType(StringType()))
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
@@ -37,14 +48,17 @@ if __name__ == "__main__":
     print("Spark Version #"+spark.version) # spark 3.3.1
 
     # combine azure with hetzner billing
-    all_billing_data = all_billing.generate_uniform_data_from(spark, azure_data, hetzner_data, aws_data, metadata_dir )
+    all_billing_data = all_billing.generate_uniform_data_from(spark, azure_data, hetzner_data, aws_data, metadata_dir)
+
 
     # Map the CostResourceTag to a joined Tag list as a string
     # write to file| summarize sum(Costs)
     if args.jdbc_url:
         all_billing_data.toDF() \
-            .withColumn("CostResourceTag", concat_ws(";", col("CostResourceTag"))) \
-            .withColumn("ProductTag", concat_ws(";", col("ProductTag"))) \
+            .withColumn("CostResourceTag", non_empty_filter_udf(col("CostResourceTag"))) \
+            .withColumn("ProductTag", non_empty_filter_udf(col("ProductTag"))) \
+            .withColumn("CostResourceTag", concat_ws(",", col("CostResourceTag"))) \
+            .withColumn("ProductTag", concat_ws(",", col("ProductTag"))) \
             .write \
             .format("jdbc") \
             .mode("overwrite") \
@@ -52,8 +66,27 @@ if __name__ == "__main__":
             .option("dbtable", args.jdbc_table) \
             .save()
 
+        all_billing_data.toDF() \
+            .withColumn("CostResourceTag", non_empty_filter_udf(col("CostResourceTag"))) \
+            .select( explode("CostResourceTag").alias("CostResourceTag")) \
+            .distinct() \
+            .write \
+            .format("jdbc") \
+            .mode("overwrite") \
+            .option("url", args.jdbc_url) \
+            .option("dbtable", args.jdbc_table+"_tags") \
+            .save()
+
     if args.output_path:
         all_billing_data.toDF() \
-            .withColumn("CostResourceTag", concat_ws(";", col("CostResourceTag"))) \
-            .withColumn("ProductTag", concat_ws(";", col("ProductTag"))) \
+            .withColumn("CostResourceTag", non_empty_filter_udf(col("CostResourceTag"))) \
+            .withColumn("ProductTag", non_empty_filter_udf(col("ProductTag"))) \
+            .withColumn("CostResourceTag", concat_ws(",", col("CostResourceTag"))) \
+            .withColumn("ProductTag", concat_ws(",", col("ProductTag"))) \
             .write.mode('overwrite').options(delimiter='\t', header=True).csv(output_path + "/all_billing")
+
+        all_billing_data.toDF() \
+            .withColumn("CostResourceTag", non_empty_filter_udf(col("CostResourceTag"))) \
+            .select( explode("CostResourceTag").alias("CostResourceTag")) \
+            .distinct() \
+            .write.mode('overwrite').options(delimiter='\t', header=True).csv(output_path + "/all_billing_tags")

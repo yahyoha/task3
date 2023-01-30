@@ -135,8 +135,46 @@ terraform apply
 
 Todo: Architecture Diagram
 
+``
+cd docker/
+docker-compose up
+``
 
-# Development 
+### create data structures in sqlserver
+``
+./sqldata/sql_create_tables.sh
+``
+
+### Generate Data into sqlserver
+```
+python cloudbillingtool-run.py --hetzner_data "tests/data/hetzner/*.csv" \
+    --azure_data "tests/data/azure/*.csv" \
+    --metadata "tests/metadata" \
+    --output_path "/tmp/cloudbillingtool/" \
+    --jdbc_url "jdbc:sqlserver://localhost:1433;databaseName=cloudbillingtool;user=SA;password=chiiKu4x*1;trustServerCertificate=true;encrypt=false;" \
+    --jdbc_table "allbilling"
+```
+
+### Query data from sqlserver
+``
+./sqldata/sql_query.sh
+``
+
+### Grafana Data Source
+
+Create a new sqlserver data source using username: SA with password "chiiKu4x*1" sql1:1433 on database "cloudbillingtool"
+
+### Grafana Dashboard with Grafana API Key
+Access Grafana via localhost:3000 with admin/password and generate an GRAFANA_API_KEY=abc
+Create Grafana dashboard using the API KEY
+```
+GRAFANA_API_KEY=abc
+python upload_grafana_dashboard.py --dashboard_dir grafana/ --dashboard_name CloudBillingDashboard.json --grafana_api http://localhost:3000/api --grafana_key $GRAFANA_API_KEY
+```
+
+
+# Developmen./sqldata/sql_create_tables.sh
+
 ## Build
 ```
 python setup.py bdist_wheel

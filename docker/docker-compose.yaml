@@ -11,6 +11,8 @@ services:
       - /opt/mssql/bin/sqlservr
     tty: true
     stdin_open: true
+    networks:
+      - grafana-network
 
   grafana:
     image: grafana/grafana:latest

@@ -37,13 +37,13 @@ def load_files(spark, hetzner_data, work_folder ) -> rdd :
             "Quantity": row.Quantity,
             "UnitPrice": row.UnitPrice,
             "CostResourceID":  helper.extract_costresourceid(row.Description),
-            "CostResourceTag":   list( set(
+            "CostResourceTag":   list(set(
                                     [""] +
                                     list(type_mapping_df.loc[type_mapping_df['Type'].str.contains( row.Type)]['CostResourceTag']) +    # filter typeMapping for rowType
                                     list(resource_mapping_df.loc[resource_mapping_df['CostResourceID'] \
                                          .str.contains(helper.extract_costresourceid(row.Description))]['CostResourceTag'])    # filter resourceMapping for costresourceid
                                     )),
-            "ProductTag": list( set([""]+resource_mapping_df.loc[resource_mapping_df['CostResourceID'].str.contains(helper.extract_costresourceid(row.Description))]['ProductTag']) )
+            "ProductTag": list(set([""]+resource_mapping_df.loc[resource_mapping_df['CostResourceID'].str.contains(helper.extract_costresourceid(row.Description))]['ProductTag']) )
         })
 
 

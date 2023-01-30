@@ -19,7 +19,7 @@ def extract_costresourceid(desc):
     if desc and len(desc) > 0:
         return re.search(r'#[0-9]+', desc).group() if re.search(r'#[0-9]+', desc) else ""
     else:
-        return""
+        return "NoResourceId"
 
 
 def fix_date_format_for_hetzner(billing_date_hetzner):

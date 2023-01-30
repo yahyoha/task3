@@ -1,6 +1,7 @@
 CostResourceID	CostResourceTag	ProductTag
-#179062	IT-OPS,BACKUP	storagebox
-#223630	IT-OPS,BACKUP	storagebox
+#179062	IT-OPS	storagebox
+#223630	IT-OPS	storagebox
+#223630	BACKUP	storagebox
 #929826	IT-OPS	nexus1
 #948032	IT-OPS	kvm1
 #1040774	IT-OPS	kvm2
