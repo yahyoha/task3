@@ -1,79 +1,83 @@
-<!-- PROJECT LOGO -->
-<br />
-<div align="center">
-  <img src="multi-cloud-billing.jpg" alt="Logo" width="60" height="60">
-  <h2 align="center" style="text-align: center;">Cloud Billing Tool</h2>
-  <p align="center">
-   Unify Your Cloud Costs, Simplify Your Bill Management with our Cloud Billing Tool
-  </p>
-</div>
+# CloudBillingTool
+
+Teams can order cloud resources (Azure, Hetzner Cloud/Hetzner Dedicated, AWS, .... ) for environments (e.g. AKS). 
+These resources cause costs in the different environments. These costs should be (1) recorded, (2) evaluated and (3) 
+transparently identified and presented according to a defined logic of the cost causer.
+
+## Table of Contents
+
+- [Project Description](#project-description)
+- [Getting Started](#getting-started)
+
+# Project Description
+
+The CloudBillingTool collects all the different costs from providers and transform those into a unique
+"allbilling" format and write this into a sql database using a jdbc driver.  
+
+- Why did we use the Techstack
+- Challenges we faced during the development
+
+### Supported Costs Provider
+
+Azure YES
+
+Hetzner YES
+
+AWS Coming SOON
 
 
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li><a href="#architecture">Architecture</a></li>
-    <li><a href="#Overview-of-the-Key-Components">Overview of the Key Components</a></li>
-     <li><a href="#requirements">Requirements</a></li>
-    <li><a href="#installation">Installation</a></li>
-    <li><a href="#limitation">Limitation</a></li>
-  </ol>
-</details>
+# Getting Started
 
+CloudBillingTool assumes that the billing data is properly formated. The hetzner provided costs files are corrupt and 
+should be fixed, following the script 'hetzner_fix_data.py'. 
 
-## Architecture
-<div align="center">
-<img src="CloudBillingToolArchitecture.png" alt="Architecture" width="500" height="350">
-</div>
+## Requirements
 
+- Billing Data from Providers
+- Python3
+- SQL Server
+- pySpark for processing the data
+- Grafana
 
-## Overview of the Key Components
+## How to Install and Run the Project
 
-**Azure Synapse Analytics** is a fully managed, cloud-based analytics platform that allows users to ingest, prepare, manage, and serve data for immediate business intelligence and machine learning needs. 
+The CloudBillingTool downloads the costs files from the different locations and processes the data and write the output
+(allbilling) into the target SQL Server Table which is visualized from Grafana.
 
-**Azure Synapse Studio Notebooks** is a feature of Azure Synapse Analytics that allows us to create, edit, and run Jupyter notebooks within the Azure Synapse Studio environment.
+### Infrastructure
 
-**In Azure Synapse, pipelines** are a fundamental building block for creating and organizing data integration and data flow workflows.
+- SQL Server
+- Grafana
 
-**Triggers** in Synapse pipelines determine when a particular pipeline(s) should be run.
-
-**Azure Data Explorer** is a fully managed, high-performance, big data analytics platform that makes it easy to analyze high volumes of data in near real time.
-
-**Kusto Query Language (KQL)** is the query language used by Azure Data Explorer(ADX) to retrieve and analyze data stored in the service.
-
-
-**Grafana** is an open-source platform for data visualization and monitoring. It provides a powerful and flexible way to create, explore, and share dashboards and metrics with a wide range of data sources.
-
- ## Requirements
-  CloudBilling Tool assume that the Hetzner Data format should be formatted. To validate the data it should pass the following script 'hetzner_fix_data.py'.Please check this file for further instructions. 
-
-## Installation
-
-Please clone the repo of CloudBilling Tool.
-
-```
-git clone https://gitlab.com/rocket9-code/customers/senec/cloudbillingtool-app.git
-```
-## Run CloudBillingTool as cli
-```
-usage: cloudbillingtool-run.py [-h] [--hetzner_data HETZNER_DATA] [--azure_data AZURE_DATA] [--aws_data AWS_DATA] [--metadata METADATA] [--output_path OUTPUT_PATH]
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --hetzner_data HETZNER_DATA
-                        Path to Hetzner data files
-  --azure_data AZURE_DATA
-                        Path to Azure data files
-  --aws_data AWS_DATA   Path to AWS data files
-  --metadata METADATA   Path to metadata (mapping files) directory
-  --output_path OUTPUT_PATH
-                        Path to output directory
+#### Docker Compose
 
 ```
-## Run CloudBillingTool via docker
+cd docker/
+docker compose up
+```
 
-The following code will build a docker container (standalone). It needs the data mounted (eg. azure  blob storage or locally) and also the output folder
+#### #Cloud
+
+Please make sure an SQL Server is setup and running. Grafana is setup and running. Network Connection exists.
+
+## Run CloudBillingTool 
+
+### Run CloudBillingTool via standalone (locally)
+```
+usage: cloudbillingtool-run.py [-h] 
+
+python cloudbillingtool-run.py \
+    --output_path /tmp/cloudbilling/output/  \
+    --jdbc_url "jdbc:sqlserver://cloudbillingtool.database.windows.net:1433;databaseName=cloudbillingtooldb;user=admin;password=pw123;trustServerCertificate=true;encrypt=false;"  \
+    --azure_sa_name "seneccloudbillingtool"   \
+    --azure_sa_key "xxyy \
+    --download
+
+```
+### Run CloudBillingTool via docker
+The following code will build a docker container ( as a standalone mode). 
+
+Run local test data
 ```
 # build image
 docker build -t cloudbillingtool ./
@@ -81,55 +85,38 @@ docker build -t cloudbillingtool ./
 # run the container
 bash docker-run.sh
 #or
-docker run --name cloudbillingtool -v ${PWD}/tests/data/:/data/ -v ${PWD}/tests/metadata/:/metadata/ -v /tmp/output/:/output/ cloudbillingtool
+docker run --name cloudbillingtool \
+    -v ${PWD}/tests/data/:/data/ \
+    -v ${PWD}/tests/metadata/:/metadata/ \
+    -v /tmp/output/:/output/ cloudbillingtool
 
 # cleanup
-dockdocker stop cloudbillingtool; docker rm cloudbillingtool;  
+docker stop cloudbillingtool; docker rm cloudbillingtool;  
 ```
 
-## Setup CloudBillingTool with Synapse
-
-
-### Deploy Infrastructure to Azure
+Run with data from Azure storage Account
 ```
-git clone terraform-repo
-terraform init
-terraform plan
-terraform validate
-terraform apply
+docker build -t cloudbillingtool ./
+
+docker run --name cloudbillingtool
+    -v ${PWD}/tests/metadata/:/metadata/ \
+    -v /tmp/output/:/output/ cloudbillingtool
+
+python cloudbillingtool-run.py \
+    --output_path /tmp/cloudbilling/output/  \
+    --jdbc_url "jdbc:sqlserver://cloudbillingtool.database.windows.net:1433;databaseName=cloudbillingtooldb;user=admin;password=pw123;trustServerCertificate=true;encrypt=false;"  \
+    --azure_sa_name "seneccloudbillingtool"  \
+    --azure_sa_key "xxyy \
+    --download
 ```
 
-### Setup Grafana with Kusto Connection
-1. Select 'App Registrations' service from your Azure Portal.
-2. Select '+New Registration'  and Give the name of your application e.g. 'SenecBillingAppV2' and click the button 'Registration.
-3. Please note the following values,APPLICATION(Client)ID and DIRECTORY(Tenant) ID from the 'App Registrations' page.
-4. Navigate to 'Certificates&Secrets' which is on the left side of the page 'SenecBillingAppV2'.
-5. Click '+ New Client Secret' and this will open a window. Fill up the form according to your custom name and click the button 'Add'. This will create a Secret Key and Value.Save the 'Secret value'.
-6. Navigate to the Azure Cluster created by Terraform.
-7. Select the database and navigate to the 'Permission' and give viewer permission to your application created in step 2.
-8. Go to your 'Grafana Account' and then select 'Configuration'.
-9. Select 'Plugins' Tab and Search for the plugin 'Azure Data Explorer Data Source'.Install it.
-10. Now select 'Data Sources' Tab and write 'Azure Data Explorer Data Source' in the search bar.Press 'Add Data Source' button.This will open 'Data Sources / Azure Data Explorer Datasource' page.
-11. Set the name 'cloudbillingsenecGrafanaV1' because dashboard will be using this same name.If you use our own custom name,you have to  update the dashboard's datasource and point it to your own 'Data Source Name.
-12. Navigate to the Azure Data Explorer Web UI via the Azure Portal. The AAD application that you created in step 2 needs to be given viewer access to your Azure Data Explorer database. This is done using the dot command.
-```
-.add database [our_db_name] viewers (‘aadapp=[our_client_id(values from step 3);our_tenant_id(values from step 3)’)
-```
-13. Navigate back to your Grafana's page 'Data Sources / Azure Data Explorer Datasource' and scroll down.Stop at the section 'Connection Details'.
+### Run CloudBillingTool via submitting to a SparkCluster
 
-14. Fill up the forms as below : 
-    1. Azure Cloud : Azure
-    2. Cluster URL : (CLUSTER_URL_OF_OUR_YOUR_CLUSTER)
-    3. Tenant ID : (TENANT_ID/DIRECTORY_ID-values from step 3)
-    4. Client ID:  (APPLICATION_ID/SERVICE_PRINCIPLE_ID - values from step 3)
-    5. Client Secret : (PASSWORD_CREATED_IN_STEP-This is the 'Secret Value' from the step 5)
+Todo:
 
-15. Scroll down and stop at the section 'Default Schema Settings'.Select 'Default Database' dropdown and if the step 14 is successful you will see the name of the database from your 'Azure Data Explorer Cluster'.
+### How to Add a new Costs Data Source
 
-16. Select the database and press 'Save&Test' Button.
-
-17. Navigate Back to the 'Billing Dashboard' and you will see our visualization.
-  
+This will describe how you can add more data sources to the costs description.
 
 ## Setup CloudBillingTool with K8s and SQL Server
 
@@ -147,6 +134,9 @@ docker-compose up
 
 ### Generate Data into sqlserver
 ```
+python cloudbillingtool-run.py --hetzner_data "/home/senec/seneccloudbillingtool/hetznerbilling/*.csv"     --metadata "tests/metadata"     --jdbc_url "jdbc:sqlserver:// cloudbillingtool.database.windows.net:1433;databaseName=cloudbillingtool;user=cloudbillingtool_admin;password=WooQuuWaer7o;trustServerCertificate=true;encrypt=false;"     --jdbc_table "allbilling"   --azure_sa_name "seneccloudbillingtool"   --azure_sa_key "5Gm67oAb2JcvdtMKn4KRBCZQhmmrZnrRgs8W3pCM+/SJNQ8TFci0b9I7+7PWkO1tGLNhK7wDmbxf+AStFWm2RA=="
+
+
 python cloudbillingtool-run.py --hetzner_data "tests/data/hetzner/*.csv" \
     --azure_data "tests/data/azure/*.csv" \
     --metadata "tests/metadata" \
@@ -169,7 +159,8 @@ Access Grafana via localhost:3000 with admin/password and generate an GRAFANA_AP
 Create Grafana dashboard using the API KEY
 ```
 GRAFANA_API_KEY=abc
-python upload_grafana_dashboard.py --dashboard_dir grafana/ --dashboard_name CloudBillingDashboard.json --grafana_api http://localhost:3000/api --grafana_key $GRAFANA_API_KEY
+GRAFANA_API=http://localhost:3000/api
+python upload_grafana_dashboard.py --dashboard_dir grafana/ --dashboard_name CloudBillingDashboard.json --grafana_api $GRAFANA_API --grafana_key $GRAFANA_API_KEY
 ```
 
 

@@ -9,6 +9,8 @@ from cloudbillingtool import all_billing
 from pyspark.sql.functions import udf, col
 from pyspark.sql.types import ArrayType, StringType
 
+from cloudbillingtool.helper import download_blobs_from_azure
+
 
 def non_empty_filter(col):
     return [x for x in col if x]
@@ -19,36 +21,59 @@ non_empty_filter_udf = udf(non_empty_filter, ArrayType(StringType()))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--hetzner_data', help='Path to Hetzner data files' )
-    parser.add_argument('--azure_data', help='Path to Azure data files' )
-    parser.add_argument('--aws_data', help='Path to AWS data files' )
-    parser.add_argument('--metadata', help='Path to metadata (mapping files) directory')
+    parser.add_argument('--temp_path', help='Path for storing temporal filed', default='/tmp/cloudbilling/' )
     parser.add_argument('--output_path', help='Path to output directory')
     parser.add_argument('--jdbc_url', help='JDBC Connection String')
-    parser.add_argument('--jdbc_table', help='JDBC Target Table')
-    parser.add_argument('--jdbc_user', help='JDBC User')
-    parser.add_argument('--jdbc_password', help='JDBC Password')
+    parser.add_argument('--jdbc_table', help='JDBC Target Table', default='allbilling' )
+
+    parser.add_argument('--azure_sa_name', help='Azure Storage Account Name' )
+    parser.add_argument('--azure_sa_key', help='Azure Storage Account Key')
+    parser.add_argument('--azurebilling_container', help='Azure Storage Account Container', default='azurebilling')
+    parser.add_argument('--metadata_container', help='Metdata Account Container', default='metadata')
+    parser.add_argument('--awsbilling_container', help='Aws Billing Account Container', default='awsbilling')
+    parser.add_argument('--hetznerbilling_container', help='Hetzner Account Container', default='hetznerbilling')
+
+    parser.add_argument('--download', help='enable/disable download',  action='store_true')
 
     args = parser.parse_args()
 
-    hetzner_data = args.hetzner_data
-    azure_data = args.azure_data
-    aws_data = args.aws_data
-    metadata_dir = args.metadata
+    hetzner_data = args.temp_path + args.hetznerbilling_container
+    azure_data = args.temp_path + args.azurebilling_container
+    aws_data = args.temp_path + args.awsbilling_container
+    metadata_dir = args.temp_path + args.metadata_container
     output_path = args.output_path
 
-    # Initialize the spark context.
+    if args.download:
 
+        # Download azure billing data
+        download_blobs_from_azure(args.azure_sa_name, args.azure_sa_key, args.azurebilling_container, azure_data)
+
+        # Download hetznerdata
+        download_blobs_from_azure(args.azure_sa_name, args.azure_sa_key, args.hetznerbilling_container, hetzner_data)
+
+        # Download awsdata
+        download_blobs_from_azure(args.azure_sa_name, args.azure_sa_key, args.awsbilling_container, aws_data)
+
+        # Download awsdata
+        download_blobs_from_azure(args.azure_sa_name, args.azure_sa_key, args.metadata_container, metadata_dir)
+
+
+    azure_select_files = azure_data + "/subscriptions/*/*/*/*.csv"
+
+    hetzner_select_files = hetzner_data + "/*.csv"
+
+    # Initialize the spark context.
     spark = SparkSession\
         .builder\
         .appName("CloudBillingTool")\
-        .config("spark.driver.extraClassPath", "jar/mssql-jdbc.jar")\
+        .config("spark.driver.extraClassPath", "jdbc/mssql-jdbc.jar")\
         .getOrCreate()
 
     print("Spark Version #"+spark.version) # spark 3.3.1
 
     # combine azure with hetzner billing
-    all_billing_data = all_billing.generate_uniform_data_from(spark, azure_data, hetzner_data, aws_data, metadata_dir)
+    all_billing_data = all_billing.generate_uniform_data_from(spark, azure_select_files
+                                                              , hetzner_data, aws_data, metadata_dir)
 
 
     # Map the CostResourceTag to a joined Tag list as a string

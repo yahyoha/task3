@@ -15,14 +15,26 @@ spec:
         app: {{ .Chart.Name }}
     spec:
       containers:
-        - name: {{ .Chart.Name }}
-          image: "{{ .Values.image.image }}:{{ .Values.image.version | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["python", "cloudbillingtool-run.py", "--hetzner_data", "/config/hetzner/*.csv", "--azure_data", "/config/azure/*.csv", "--aws_data", "", "--metadata", "/config/metadata", "--output_path", "/config/output/" ]
-#          volumeMounts:
-#            - name: config-volume
-#              mountPath: /config
-#      volumes:
-#        - name: config-volume
-#          configMap:
-#            name: cloudbillingtool-configmap
+      - name: {{ .Chart.Name }}
+        resources:
+          requests:
+            cpu: {{ .Values.image.cpu }}
+            memory: {{ .Values.image.memory }}
+        image: "{{ .Values.image.image }}:{{ .Values.image.version | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        envFrom:
+        - secretRef:
+            name: azure-credentials
+        command:
+        - "python"
+        args:
+        - "cloudbillingtool-run.py"
+        - "--jdbc_url"
+        - "$(JDBC_URL)"
+        - "--azure_sa_name"
+        - "$(AZURE_SA_NAME)"
+        - "--azure_sa_key"
+        - "$(AZURE_SA_KEY)"
+        - "--download"
+      imagePullSecrets:
+      - name: gitlab-deploy-token

@@ -22,7 +22,7 @@ services:
       - GF_SECURITY_ADMIN_USER=admin
       - GF_SECURITY_ADMIN_PASSWORD=password
     volumes:
-      - grafana-data:/var/jar/grafana
+      - grafana-data:/var/lib/grafana
     networks:
       - grafana-network
 

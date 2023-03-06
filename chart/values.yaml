@@ -1,8 +1,11 @@
 image:
-  image: docker-registry.senec.com/kfleischmann/cloudbillingtool-app
+  image: docker-registry.senec.com/k.fleischmann.extern/cloudbillingtool-app
+  cpu: 3
+  memory: 4Gi
 
   # defaults to Charts appVersion
   version: latest
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
-imagePullSecrets: [ ]
+imagePullSecrets:
+  - name: gitlab-deploy-token
