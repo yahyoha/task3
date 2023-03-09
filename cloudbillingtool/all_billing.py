@@ -3,6 +3,7 @@ from pyspark.sql.types import StructType, StringType, DateType, ArrayType, Decim
 
 from . import azure_billing
 from . import hetzner_billing
+from . import aws_billing
 
 all_bills_schema = StructType() \
   .add("Provider",StringType(), True) \
@@ -21,7 +22,7 @@ def generate_uniform_data_from(spark, azure_data, hetzner_data, aws_data, metada
 
     hetzner_billing_with_tags = hetzner_billing.load_files_with_mapping(spark, hetzner_data, metadata_path)
 
-    # Todo: aws is missing
+    aws_billing = aws_billing.load_files(spark, aws_data, metadata_path)
 
-    # combine azure with hetzner billing
+    # add hetzner and aws to azure 
     return azure_billing_with_tags.rdd.union(hetzner_billing_with_tags.rdd)

@@ -21,7 +21,7 @@ non_empty_filter_udf = udf(non_empty_filter, ArrayType(StringType()))
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('--temp_path', help='Path for storing temporal filed', default='/tmp/cloudbilling/' )
+    parser.add_argument('--temp_path', help='Path for storing temporal files', default='/tmp/cloudbilling/' )
     parser.add_argument('--output_path', help='Path to output directory')
     parser.add_argument('--jdbc_url', help='JDBC Connection String')
     parser.add_argument('--jdbc_table', help='JDBC Target Table', default='allbilling' )
@@ -29,18 +29,21 @@ if __name__ == "__main__":
     parser.add_argument('--azure_sa_name', help='Azure Storage Account Name' )
     parser.add_argument('--azure_sa_key', help='Azure Storage Account Key')
     parser.add_argument('--azurebilling_container', help='Azure Storage Account Container', default='azurebilling')
-    parser.add_argument('--metadata_container', help='Metdata Account Container', default='metadata')
     parser.add_argument('--awsbilling_container', help='Aws Billing Account Container', default='awsbilling')
     parser.add_argument('--hetznerbilling_container', help='Hetzner Account Container', default='hetznerbilling')
+    parser.add_argument('--metadata_container', help='Metdata Account Container', default='metadata')
 
     parser.add_argument('--download', help='enable/disable download',  action='store_true')
 
     args = parser.parse_args()
 
-    hetzner_data = args.temp_path + args.hetznerbilling_container
-    azure_data = args.temp_path + args.azurebilling_container
+    hetzner_data = 'tests/data/hetzner/*.csv'
+    azure_data = 'tests/data/azure/*.csv'
+    metadata_dir = 'tests/metadata'
+    # hetzner_data = args.temp_path + args.hetznerbilling_container
+    # azure_data = args.temp_path + args.azurebilling_container
     aws_data = args.temp_path + args.awsbilling_container
-    metadata_dir = args.temp_path + args.metadata_container
+    # metadata_dir = args.temp_path + args.metadata_container
     output_path = args.output_path
 
     if args.download:
@@ -54,13 +57,16 @@ if __name__ == "__main__":
         # Download awsdata
         download_blobs_from_azure(args.azure_sa_name, args.azure_sa_key, args.awsbilling_container, aws_data)
 
-        # Download awsdata
+        # Download metadata
         download_blobs_from_azure(args.azure_sa_name, args.azure_sa_key, args.metadata_container, metadata_dir)
 
+    
+    # azure_select_files = azure_data + "/subscriptions/*/*/*/*.csv"
 
-    azure_select_files = azure_data + "/subscriptions/*/*/*/*.csv"
+    # hetzner_select_files = hetzner_data + "/*.csv"
 
-    hetzner_select_files = hetzner_data + "/*.csv"
+    azure_select_files = azure_data
+    hetzner_select_files = hetzner_data
 
     # Initialize the spark context.
     spark = SparkSession\

@@ -1,6 +1,6 @@
 import re
 import os
-from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
+# from azure.storage.blob import BlobServiceClient, BlobClient, ContainerClient
 
 
 def tags_from_json_string(str):
