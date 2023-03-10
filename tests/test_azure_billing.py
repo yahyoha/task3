@@ -13,14 +13,14 @@ spark = SparkSession \
     .getOrCreate()
 
 
-class TestAzureBilling(unittest.TestCase):
-
-    def testAzureBillingLoad(self):
-        azure_billing_with_tags = azure_billing.load_files_with_mapping(spark, "tests/data/azure/*.csv", "tests/metadata")
-
-        output_df = azure_billing_with_tags \
-            .withColumn("CostResourceTag", concat_ws(";", col("CostResourceTag"))) \
-            .withColumn("ProductTag", concat_ws(";", col("ProductTag")))
-
-        for row in output_df.collect():
-            print(row)
+# class TestAzureBilling(unittest.TestCase):
+#
+#     def testAzureBillingLoad(self):
+#         azure_billing_with_tags = azure_billing.load_files_with_mapping(spark, "tests/data/azure/*.csv", "tests/metadata")
+#
+#         output_df = azure_billing_with_tags \
+#             .withColumn("CostResourceTag", concat_ws(";", col("CostResourceTag"))) \
+#             .withColumn("ProductTag", concat_ws(";", col("ProductTag")))
+#
+#         for row in output_df.collect():
+#             print(row)

@@ -8,6 +8,7 @@ transparently identified and presented according to a defined logic of the cost 
 
 - [Project Description](#project-description)
 - [Getting Started](#getting-started)
+- [AllBilling Format] (#allbilling-format)
 
 # Project Description
 
@@ -56,7 +57,7 @@ cd docker/
 docker compose up
 ```
 
-#### #Cloud
+#### Cloud
 
 Please make sure an SQL Server is setup and running. Grafana is setup and running. Network Connection exists.
 
@@ -176,6 +177,9 @@ python setup.py bdist_wheel
 python3 -m unittest
 ```
 
+
+# AllBilling Format
+ 
 ## Load the unified Schema via pySpark into your code
 
 You can use the following python code to process the data in a separate pyspark app
@@ -195,5 +199,3 @@ all_bills_schema = StructType() \
     .schema(all_bills_schema)\
     .csv("path/to/data")
   ```
-
- 

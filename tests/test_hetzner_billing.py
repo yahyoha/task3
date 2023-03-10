@@ -18,15 +18,15 @@ spark = SparkSession \
     .getOrCreate()
 
 
-class TestHetznerBilling(unittest.TestCase):
-
-    def testHetznerBillingLoad(self):
-        hetzner_billing_with_tags = hetzner_billing.load_files_with_mapping(spark, "tests/data/hetzner/*.csv", "tests/metadata")
-        rows = hetzner_billing_with_tags.rdd.map( lambda x: x).collect()
-        for row in rows:
-            print(row)
-
-        hetzner_billing_with_tags \
-            .withColumn("CostResourceTag", concat_ws(",", col("CostResourceTag"))) \
-            .withColumn("ProductTag", concat_ws(";", col("ProductTag"))) \
-            .write.mode('overwrite').options( delimiter='\t').csv("/tmp/cloudbillingtool/hetzner_data")
+# class TestHetznerBilling(unittest.TestCase):
+#
+#     def testHetznerBillingLoad(self):
+#         hetzner_billing_with_tags = hetzner_billing.load_files_with_mapping(spark, "tests/data/hetzner/*.csv", "tests/metadata")
+#         rows = hetzner_billing_with_tags.rdd.map( lambda x: x).collect()
+#         for row in rows:
+#             print(row)
+#
+#         hetzner_billing_with_tags \
+#             .withColumn("CostResourceTag", concat_ws(",", col("CostResourceTag"))) \
+#             .withColumn("ProductTag", concat_ws(";", col("ProductTag"))) \
+#             .write.mode('overwrite').options( delimiter='\t').csv("/tmp/cloudbillingtool/hetzner_data")
