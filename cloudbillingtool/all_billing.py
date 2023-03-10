@@ -25,4 +25,4 @@ def generate_uniform_data_from(spark, azure_data, hetzner_data, aws_data, metada
     aws_billing = aws_billing.load_files(spark, aws_data, metadata_path)
 
     # add hetzner and aws to azure 
-    return azure_billing_with_tags.rdd.union(hetzner_billing_with_tags.rdd)
+    return azure_billing_with_tags.rdd.union(hetzner_billing_with_tags.rdd).union(aws_billing.rdd)
