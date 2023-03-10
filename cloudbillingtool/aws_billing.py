@@ -1,6 +1,6 @@
 import pandas as pd
 import csv
-from pyspark import rdd
+from pyspark import rdd, Row
 from pyspark.pandas import DataFrame
 from pyspark.sql.functions import col, lit, to_date, explode
 from . import helper
@@ -18,41 +18,60 @@ from . import helper
 ## Costs:
 
 
+def create_multiple_rows(row):
+    rows = []
+    for idx, col_name in enumerate(row.__fields__):
+        if idx == 0: # skip first column
+            continue
+        value = getattr(row, col_name)
+        rows.append(Row(Provider="AWS", Type=col_name, Costs=value, Date=row[0]))
+    return rows
+
 
 def load_files(spark, aws_data, work_folder ) -> rdd :
     resource_mapping_df = pd.read_csv(work_folder+"/resource_mapping.csv", sep='\t')
     type_mapping_df = pd.read_csv(work_folder+"/type_mapping.csv", sep='\t')
 
-    return\
+    df = \
         spark.read\
-        .options(format='csv', escape="\"", header=True) \
+        .options(format='csv', escape="\"", header=True,  inferSchema=True) \
         .csv(aws_data) \
-        .withColumn("effectivePrice",col("effectivePrice").cast("decimal(12,8)")) \
-            .withColumn("quantity", col("quantity").cast("decimal(12,8)"))\
-            .withColumn("costInBillingCurrency", col("costInBillingCurrency").cast("decimal(12,8)"))\
-            .withColumn("unitPrice", col("unitPrice").cast("decimal(12,8)")) \
-            .rdd \
-            .map(lambda row: {
-                "Provider": "aws",
-                "Type":  "",  # Missing
-                "Costs": row.Costs,
-                "UnitPrice": "", # Missing
-                "Quantity": "", # Missing
-                "Product": row.Product,
-                "Date": row.Date,
-                "CostResourceID": "",
-                "CostResourceTag": "",
-                "ProductTag": ""
-          })
+        .alias("aws_df")
+
+    new_rdd = df.rdd.flatMap(create_multiple_rows)
+
+    for row in new_rdd.collect():
+        print(row)
+
+    pass
+
+        # .withColumn("effectivePrice",col("effectivePrice").cast("decimal(12,8)")) \
+        #     .withColumn("quantity", col("quantity").cast("decimal(12,8)"))\
+        #     .withColumn("costInBillingCurrency", col("costInBillingCurrency").cast("decimal(12,8)"))\
+        #     .withColumn("unitPrice", col("unitPrice").cast("decimal(12,8)")) \
+        #     .rdd \
+        #     .map(lambda row: {
+        #         "Provider": "aws",
+        #         "Type":  "",  # Missing
+        #         "Costs": row.Costs,
+        #         "UnitPrice": "", # Missing
+        #         "Quantity": "", # Missing
+        #         "Product": row.Product,
+        #         "Date": row.Date,
+        #         "CostResourceID": "",
+        #         "CostResourceTag": "",
+        #         "ProductTag": ""
+        #   })
 
 
 def load_files_with_mapping(spark, aws_data, metadata_folder):
-    hetzner_df: DataFrame = \
+
+    aws_df: DataFrame = \
         load_files(spark, aws_data, metadata_folder+"/mappingfiles")\
         .toDF()\
-        .alias("azure_df") \
+        .alias("aws_df") \
 
-    # joined_with_tags = hetzner_df \
+    # joined_with_tags = aws_df \
     #     .select(lit("azure").alias("Provider"),
     #             col("azure_df.Type"),
     #             col("azure_df.Product").alias("ProductName"),

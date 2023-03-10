@@ -41,12 +41,12 @@ def load_files(spark, azure_data, work_folder ) -> rdd :
 
 
 def load_files_with_mapping(spark, azure_data, metadata_folder):
-    hetzner_df: DataFrame = \
+    azure_df: DataFrame = \
         load_files(spark, azure_data, metadata_folder+"/mappingfiles")\
         .toDF()\
         .alias("azure_df") \
 
-    joined_with_tags = hetzner_df \
+    joined_with_tags = azure_df \
         .select(lit("azure").alias("Provider"),
                 col("azure_df.Type"),
                 col("azure_df.Product").alias("ProductName"),
