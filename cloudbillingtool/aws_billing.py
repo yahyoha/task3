@@ -17,9 +17,11 @@ def load_files(spark, aws_data, work_folder ) -> rdd :
 
     services = data[0]
 
+    # Remove first 2 rows
     data.pop(0)
     data.pop(0)
-    print(data[0][0])
+
+    # Generate iterable object 
     formatted_aws_data = []
     for row in data:
         date = row[0]
@@ -30,8 +32,7 @@ def load_files(spark, aws_data, work_folder ) -> rdd :
                 'Date': date,
                 'Product': services[i],
                 'Costs': cell
-            }
-            )
+            })
 
     return\
         spark.read\
