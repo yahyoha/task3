@@ -178,8 +178,10 @@ python3 -m unittest
 ```
 
 
-# AllBilling Format
- 
+# Allbilling Format
+
+
+
 ## Load the unified Schema via pySpark into your code
 
 You can use the following python code to process the data in a separate pyspark app
