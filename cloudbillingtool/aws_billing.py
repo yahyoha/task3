@@ -18,51 +18,44 @@ from . import helper
 ## Costs:
 
 
-def create_multiple_rows(row):
+def transform_columns_to_rows(row):
     rows = []
     for idx, col_name in enumerate(row.__fields__):
         if idx == 0: # skip first column
             continue
         value = getattr(row, col_name)
-        rows.append(Row(Provider="AWS", Type=col_name, Costs=value, Date=row[0]))
+        rows.append(Row(Product=col_name.rstrip("($)"), Costs=value, Date=row[0]))
     return rows
 
 
 def load_files(spark, aws_data, work_folder ) -> rdd :
-    resource_mapping_df = pd.read_csv(work_folder+"/resource_mapping.csv", sep='\t')
-    type_mapping_df = pd.read_csv(work_folder+"/type_mapping.csv", sep='\t')
 
-    df = \
+    #Not defined (required)
+    #resource_mapping_df = pd.read_csv(work_folder+"/resource_mapping.csv", sep='\t')
+    #type_mapping_df = pd.read_csv(work_folder+"/type_mapping.csv", sep='\t')
+
+    return \
         spark.read\
         .options(format='csv', escape="\"", header=True,  inferSchema=True) \
         .csv(aws_data) \
-        .alias("aws_df")
+        .alias("aws_df") \
+        .rdd \
+        .flatMap(transform_columns_to_rows) \
+        .map(lambda row: {
+            "Provider": "aws",
+            "Type":  "",  # Missing
+            "Costs": row.Costs,
+            "UnitPrice": "", # Missing
+            "Quantity": "", # Missing
+            "Product": row.Product,
+            "Date": row.Date,
+            "CostResourceID": "",
+            "CostResourceTag": "",
+            "ProductTag": ""
+        }) \
+        .filter(lambda row: row['Product'] != 'Total costs')
 
-    new_rdd = df.rdd.flatMap(create_multiple_rows)
-
-    for row in new_rdd.collect():
-        print(row)
-
-    pass
-
-        # .withColumn("effectivePrice",col("effectivePrice").cast("decimal(12,8)")) \
-        #     .withColumn("quantity", col("quantity").cast("decimal(12,8)"))\
-        #     .withColumn("costInBillingCurrency", col("costInBillingCurrency").cast("decimal(12,8)"))\
-        #     .withColumn("unitPrice", col("unitPrice").cast("decimal(12,8)")) \
-        #     .rdd \
-        #     .map(lambda row: {
-        #         "Provider": "aws",
-        #         "Type":  "",  # Missing
-        #         "Costs": row.Costs,
-        #         "UnitPrice": "", # Missing
-        #         "Quantity": "", # Missing
-        #         "Product": row.Product,
-        #         "Date": row.Date,
-        #         "CostResourceID": "",
-        #         "CostResourceTag": "",
-        #         "ProductTag": ""
-        #   })
-
+    # Mapping not yet defined
 
 def load_files_with_mapping(spark, aws_data, metadata_folder):
 
@@ -71,16 +64,16 @@ def load_files_with_mapping(spark, aws_data, metadata_folder):
         .toDF()\
         .alias("aws_df") \
 
-    # joined_with_tags = aws_df \
-    #     .select(lit("azure").alias("Provider"),
-    #             col("azure_df.Type"),
-    #             col("azure_df.Product").alias("ProductName"),
-    #             col("azure_df.Costs").cast("float").alias("Costs"),
-    #             col("azure_df.UnitPrice").cast("float").alias("UnitPrice"),
-    #             col("azure_df.Quantity").cast("float").alias("Quantity"),
-    #             to_date(col("azure_df.Date"), "MM/dd/yyyy").alias("Date"),
-    #             col("azure_df.CostResourceID").alias("CostResourceID"),
-    #             col("azure_df.CostResourceTag").alias("CostResourceTag"),
-    #             col("azure_df.ProductTag").alias("ProductTag"))
-    #
-    # return joined_with_tags
+    joined_with_tags = aws_df \
+        .select(lit("aws").alias("Provider"),
+                col("aws_df.Type"),
+                col("aws_df.Product").alias("ProductName"),
+                col("aws_df.Costs").cast("float").alias("Costs"),
+                col("aws_df.UnitPrice").cast("float").alias("UnitPrice"),
+                col("aws_df.Quantity").cast("float").alias("Quantity"),
+                to_date(col("aws_df.Date"), "MM/dd/yyyy").alias("Date"),
+                col("aws_df.CostResourceID").alias("CostResourceID"),
+                col("aws_df.CostResourceTag").alias("CostResourceTag"),
+                col("aws_df.ProductTag").alias("ProductTag"))
+
+    return joined_with_tags
