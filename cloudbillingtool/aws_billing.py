@@ -18,46 +18,50 @@ from . import helper
 ## Costs:
 
 
-def create_multiple_rows(row):
+def transform_columns_to_rows(row):
     rows = []
     for idx, col_name in enumerate(row.__fields__):
         if idx == 0: # skip first column
             continue
         value = getattr(row, col_name)
-        rows.append(Row(Provider="AWS", Type=col_name, Costs=value, Date=row[0]))
+        rows.append(Row(Product=col_name.rstrip("($)"), Costs=value, Date=row[0]))
     return rows
 
 
 def load_files(spark, aws_data, work_folder ) -> rdd :
     resource_mapping_df = pd.read_csv(work_folder+"/resource_mapping.csv", sep='\t')
     type_mapping_df = pd.read_csv(work_folder+"/type_mapping.csv", sep='\t')
-    
-    return\
+
+    df = \
         spark.read\
-        .options(format='csv', escape="\"", header=True)\
-        .withColumnRenamed("lineItem/UnblendedCost","UnblendedCost")\
-        .csv(aws_data)\
-        .rdd \
-        .map(lambda row: {
-            "Provider": "aws",
-            "Type":  "",  # Missing in Azure
-            "Costs": row.lineItem/UnblendedCost,
-            "UnitPrice": row.lineItem/UnblendedRate,
-            "Quantity": row.lineItem/UsageAmount,
-            "Product": row.lineItem/ProductName,
-            "Date": row.bill/BillingPeriodStartDate,
-            "CostResourceID": row.lineItem/ResourceId,
-            # "CostResourceTag": list(set(
-            #     [""] +
-            #     # no TypeMapping for Azure
-            #     # only mapping for CostRsourceId
-            #     list(resource_mapping_df.loc[resource_mapping_df['CostResourceID'] \
-            #          .str.contains(row.ResourceId)]['CostResourceTag'])
-            #     # filter resourceMapping for costresourceid
-            # )),
-            # "ProductTag": list(set([""]+resource_mapping_df.loc[resource_mapping_df['CostResourceID'].str.contains(
-            #     helper.extract_costresourceid(row.ProductName))]['ProductTag']))
-      })
+        .options(format='csv', escape="\"", header=True,  inferSchema=True) \
+        .csv(aws_data) \
+        .alias("aws_df")
+
+    new_rdd = df.rdd.flatMap(create_multiple_rows)
+
+    for row in new_rdd.collect():
+        print(row)
+
+    pass
+
+        # .withColumn("effectivePrice",col("effectivePrice").cast("decimal(12,8)")) \
+        #     .withColumn("quantity", col("quantity").cast("decimal(12,8)"))\
+        #     .withColumn("costInBillingCurrency", col("costInBillingCurrency").cast("decimal(12,8)"))\
+        #     .withColumn("unitPrice", col("unitPrice").cast("decimal(12,8)")) \
+        #     .rdd \
+        #     .map(lambda row: {
+        #         "Provider": "aws",
+        #         "Type":  "",  # Missing
+        #         "Costs": row.Costs,
+        #         "UnitPrice": "", # Missing
+        #         "Quantity": "", # Missing
+        #         "Product": row.Product,
+        #         "Date": row.Date,
+        #         "CostResourceID": "",
+        #         "CostResourceTag": "",
+        #         "ProductTag": ""
+        #   })
 
 
 def load_files_with_mapping(spark, aws_data, metadata_folder):
@@ -66,7 +70,7 @@ def load_files_with_mapping(spark, aws_data, metadata_folder):
         load_files(spark, aws_data, metadata_folder+"/mappingfiles")\
         .toDF()\
         .alias("aws_df") \
-    
+
     # joined_with_tags = aws_df \
     #     .select(lit("azure").alias("Provider"),
     #             col("azure_df.Type"),
