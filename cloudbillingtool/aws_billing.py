@@ -13,7 +13,6 @@ def load_files(spark, aws_data, work_folder ) -> rdd :
     return\
         spark.read\
         .options(format='csv', escape="\"", header=True)\
-        .withColumnRenamed("lineItem/UnblendedCost","UnblendedCost")\
         .csv(aws_data)\
         .rdd \
         .map(lambda row: {
