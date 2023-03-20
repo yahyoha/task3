@@ -104,8 +104,8 @@ aws_schema = StructType() \
 
 
 def load_files(spark, aws_data, work_folder ) -> rdd :
-    resource_mapping_df = pd.read_csv(work_folder+"/resource_mapping.csv", sep='\t')
-    type_mapping_df = pd.read_csv(work_folder+"/type_mapping.csv", sep='\t')
+    #resource_mapping_df = pd.read_csv(work_folder+"/resource_mapping.csv", sep='\t')
+    #type_mapping_df = pd.read_csv(work_folder+"/type_mapping.csv", sep='\t')
     
     return\
         spark.read\
@@ -115,13 +115,15 @@ def load_files(spark, aws_data, work_folder ) -> rdd :
         .rdd \
         .map(lambda row: {
             "Provider": "aws",
-            "Type":  "",  # Missing in Azure
+            "Type":  "",
             "Costs": row.lineItem_UnblendedCost,
             "UnitPrice": row.lineItem_UnblendedRate,
             "Quantity": row.lineItem_UsageAmount,
             "Product": row.product_ProductName,
             "Date": row.bill_BillingPeriodStartDate,
             "CostResourceID": row.lineItem_ResourceId,
+            "CostResourceTag": [""], # Todo select Tag from AWS export file
+            "ProductTag": [""]
             # "CostResourceTag": list(set(
             #     [""] +
             #     # no TypeMapping for Azure
@@ -142,16 +144,16 @@ def load_files_with_mapping(spark, aws_data, metadata_folder):
         .toDF()\
         .alias("aws_df") \
     
-    # joined_with_tags = aws_df \
-    #     .select(lit("azure").alias("Provider"),
-    #             col("azure_df.Type"),
-    #             col("azure_df.Product").alias("ProductName"),
-    #             col("azure_df.Costs").cast("float").alias("Costs"),
-    #             col("azure_df.UnitPrice").cast("float").alias("UnitPrice"),
-    #             col("azure_df.Quantity").cast("float").alias("Quantity"),
-    #             to_date(col("azure_df.Date"), "MM/dd/yyyy").alias("Date"),
-    #             col("azure_df.CostResourceID").alias("CostResourceID"),
-    #             col("azure_df.CostResourceTag").alias("CostResourceTag"),
-    #             col("azure_df.ProductTag").alias("ProductTag"))
-    #
-    # return joined_with_tags
+    aws_df_with_types = aws_df \
+        .select(lit("aws").alias("Provider"),
+                col("aws_df.Type"),
+                col("aws_df.Product").alias("ProductName"),
+                col("aws_df.Costs").cast("float").alias("Costs"),
+                col("aws_df.UnitPrice").cast("float").alias("UnitPrice"),
+                col("aws_df.Quantity").cast("float").alias("Quantity"),
+                to_date(col("aws_df.Date"), "yyyy-MM-dd").alias("Date"),
+                col("aws_df.CostResourceID").alias("CostResourceID"),
+                col("aws_df.CostResourceTag").alias("CostResourceTag"),
+                col("aws_df.ProductTag").alias("ProductTag"))
+
+    return aws_df_with_types

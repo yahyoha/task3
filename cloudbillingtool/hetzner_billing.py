@@ -53,7 +53,7 @@ def load_files_with_mapping(spark, hetzner_data, metadata_folder):
         .toDF()\
         .alias("hetzner_df") \
 
-    joined_with_tags = hetzner_df \
+    hetzner_df_with_types = hetzner_df \
         .select(lit("hetzner").alias("Provider"),
                 col("hetzner_df.Type"),
                 col("hetzner_df.Product").alias("ProductName"),
@@ -65,4 +65,4 @@ def load_files_with_mapping(spark, hetzner_data, metadata_folder):
                 col("hetzner_df.CostResourceTag").alias("CostResourceTag"),
                 col("hetzner_df.ProductTag").alias("ProductTag"))
 
-    return joined_with_tags
+    return hetzner_df_with_types

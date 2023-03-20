@@ -46,7 +46,7 @@ def load_files_with_mapping(spark, azure_data, metadata_folder):
         .toDF()\
         .alias("azure_df") \
 
-    joined_with_tags = azure_df \
+    azure_df_with_types = azure_df \
         .select(lit("azure").alias("Provider"),
                 col("azure_df.Type"),
                 col("azure_df.Product").alias("ProductName"),
@@ -58,4 +58,4 @@ def load_files_with_mapping(spark, azure_data, metadata_folder):
                 col("azure_df.CostResourceTag").alias("CostResourceTag"),
                 col("azure_df.ProductTag").alias("ProductTag"))
 
-    return joined_with_tags
+    return azure_df_with_types
