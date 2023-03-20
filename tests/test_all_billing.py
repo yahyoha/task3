@@ -19,23 +19,23 @@ spark = SparkSession \
     .getOrCreate()
 
 
-# class TestAllBilling(unittest.TestCase):
-#
-#     def testAllBillingLoad(self):
-#
-#         # combine azure with hetzner billing
-#         all_billing_data = all_billing.generate_uniform_data_from(spark, "tests/data/azure/*.csv", "tests/data/hetzner/*.csv", "tests/data/aws/*.csv", "tests/metadata")
-#
-#         output_df = all_billing_data.toDF() \
-#             .withColumn("CostResourceTag", concat_ws(";", col("CostResourceTag"))) \
-#             .withColumn("ProductTag", concat_ws(";", col("ProductTag")))
-#
-#         for row in output_df.collect():
-#             print(row)
-#
-#         # Todo: test the schema
-#         # Todo: do some nice tests
-#
-#
-# if __name__ == '__main__':
-#     unittest.main()
+class TestAllBilling(unittest.TestCase):
+
+    def testAllBillingLoad(self):
+
+        # combine azure with hetzner billing
+        all_billing_data = all_billing.generate_uniform_data_from(spark, "tests/data/azure/*.csv", "tests/data/hetzner/*.csv", "tests/data/aws/*.csv", "tests/metadata")
+
+        output_df = all_billing_data.toDF() \
+            .withColumn("CostResourceTag", concat_ws(";", col("CostResourceTag"))) \
+            .withColumn("ProductTag", concat_ws(";", col("ProductTag")))
+
+        for row in output_df.collect():
+            print(row)
+
+        # Todo: test the schema
+        # Todo: do some nice tests
+
+
+if __name__ == '__main__':
+    unittest.main()

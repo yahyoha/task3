@@ -151,7 +151,7 @@ def load_files_with_mapping(spark, aws_data, metadata_folder):
                 col("aws_df.Costs").cast("float").alias("Costs"),
                 col("aws_df.UnitPrice").cast("float").alias("UnitPrice"),
                 col("aws_df.Quantity").cast("float").alias("Quantity"),
-                to_date(col("aws_df.Date"), "yyyy-MM-dd").alias("Date"),
+                to_date(col("aws_df.Date"), "yyyy-MM-dd'T'HH:mm:ss'Z'").alias("Date"),
                 col("aws_df.CostResourceID").alias("CostResourceID"),
                 col("aws_df.CostResourceTag").alias("CostResourceTag"),
                 col("aws_df.ProductTag").alias("ProductTag"))
