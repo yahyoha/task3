@@ -24,5 +24,11 @@ def generate_uniform_data_from(spark, azure_data, hetzner_data, aws_data, metada
 
     aws_billing_without_tags = aws_billing.load_files_with_mapping(spark, aws_data, metadata_path)
 
+    # add new data sources here
+    # you can add any costs data source which follow the "all billing schema"
+
     # add hetzner and aws to azure 
-    return azure_billing_with_tags.rdd.union(hetzner_billing_with_tags.rdd).union(aws_billing_without_tags.rdd)
+    return azure_billing_with_tags.rdd\
+                .union(hetzner_billing_with_tags.rdd)\
+                .union(aws_billing_without_tags.rdd)
+

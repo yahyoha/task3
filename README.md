@@ -8,7 +8,7 @@ transparently identified and presented according to a defined logic of the cost 
 
 - [Project Description](#project-description)
 - [Getting Started](#getting-started)
-- [AllBilling Format] (#allbilling-format)
+- [All Billing Format](#allbilling-format)
 
 # Project Description
 
@@ -24,7 +24,7 @@ Azure YES
 
 Hetzner YES
 
-AWS Coming SOON
+AWS YES 
 
 
 # Getting Started
@@ -65,8 +65,36 @@ Please make sure an SQL Server is setup and running. Grafana is setup and runnin
 
 ### Run CloudBillingTool via standalone (locally)
 ```
-usage: cloudbillingtool-run.py [-h] 
+usage: cloudbillingtool-run.py [-h] [--temp_path TEMP_PATH] [--output_path OUTPUT_PATH] [--jdbc_url JDBC_URL] [--jdbc_table JDBC_TABLE] [--azure_sa_name AZURE_SA_NAME]
+                               [--azure_sa_key AZURE_SA_KEY] [--azurebilling_container AZUREBILLING_CONTAINER] [--awsbilling_container AWSBILLING_CONTAINER]
+                               [--hetznerbilling_container HETZNERBILLING_CONTAINER] [--metadata_container METADATA_CONTAINER] [--download]
 
+options:
+  -h, --help            show this help message and exit
+  --temp_path TEMP_PATH
+                        Path for storing temporal files
+  --output_path OUTPUT_PATH
+                        Path to output directory
+  --jdbc_url JDBC_URL   JDBC Connection String
+  --jdbc_table JDBC_TABLE
+                        JDBC Target Table
+  --azure_sa_name AZURE_SA_NAME
+                        Azure Storage Account Name
+  --azure_sa_key AZURE_SA_KEY
+                        Azure Storage Account Key
+  --azurebilling_container AZUREBILLING_CONTAINER
+                        Azure Storage Account Container
+  --awsbilling_container AWSBILLING_CONTAINER
+                        Aws Billing Account Container
+  --hetznerbilling_container HETZNERBILLING_CONTAINER
+                        Hetzner Account Container
+  --metadata_container METADATA_CONTAINER
+                        Metdata Account Container
+  --download            enable/disable download
+```
+
+Example for MSSQL
+```
 python cloudbillingtool-run.py \
     --output_path /tmp/cloudbilling/output/  \
     --jdbc_url "jdbc:sqlserver://cloudbillingtool.database.windows.net:1433;databaseName=cloudbillingtooldb;user=admin;password=pw123;trustServerCertificate=true;encrypt=false;"  \
@@ -178,8 +206,7 @@ python3 -m unittest
 ```
 
 
-# Allbilling Format
-
+# AllBilling Format
 
 
 ## Load the unified Schema via pySpark into your code
