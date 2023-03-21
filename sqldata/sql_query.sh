@@ -8,4 +8,4 @@ docker exec -it docker_sql1_1 /opt/mssql-tools/bin/sqlcmd \
 echo "Query data for table allbilling_tags"
 docker exec -it docker_sql1_1 /opt/mssql-tools/bin/sqlcmd \
 -S localhost -U SA -P 'chiiKu4x*1' -Q \
-"USE cloudbillingtool;SELECT CostResourceTag FROM allbilling_tags;"
+"USE cloudbillingtool;SELECT Tag FROM allbilling_tags;"
